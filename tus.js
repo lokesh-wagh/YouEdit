@@ -7,8 +7,9 @@ const port = 1080
 const server = new Server({
   path: '/files', //give path
   datastore: new FileStore({directory: './files'}), //return a directory that will give the values
+  
 })
 
-
+//i plan to use the event listener's on server here to perform necessary process to the uploaded file's
 
 server.listen({host, port}) //make the tus server listen for file upload's
