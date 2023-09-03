@@ -20,4 +20,15 @@
 
     8. implement crud operation's on mongoose schema in appropriate place's
 
+    9.create a component for tus upload (done)
+
 */
+
+const express=require('express');
+const app=express();
+
+port=8000;
+
+app.listen(port,()=>{
+    console.log('listening on port '+port);
+})

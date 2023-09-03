@@ -57,7 +57,10 @@ app.get('/stream', (req, res) => {
       fs.createReadStream(filePath).pipe(res);//pipe the entire video
   }
 });
-
+app.get('/thumbnail',(req,res)=>{
+  //this endpoint get's the thumbnail of the place where data is stored
+  
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`); //listen on the specified port
 });
