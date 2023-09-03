@@ -5,7 +5,7 @@
         for uploading a youtube create a endpoint redirect it
         No endpoint for tus tus would be directly communicated by frontend itself
 
-    2. integrate passport js , session to log the user's and editor's in
+    2. integrate passport js , session to log the user's and editor's in(done)
     
     3. design a schema for all the  view's how they are going to work
         who will interact with what and so on
@@ -24,7 +24,7 @@
 
     10. learn how authentication would work(done)
 
-    11. implemebt authentication
+    11. implement authentication(done)
 
 
 
@@ -38,6 +38,13 @@ const mongoose=require('mongoose');
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
 const cors=require('cors')
 app.use(cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Replace with your client's origin
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies)
+    next();
+  });
 
 //--------------------------passport configuration section-----------------------
 const bcrypt=require('bcrypt');
@@ -46,7 +53,7 @@ const passport=require('passport');
 const LocalStrategy=require('passport-local').Strategy;
 const GoogleStrategy=require('passport-google-oauth20').Strategy;
 const session=require('express-session');
-// console.log(process.env.CLIENT_ID);
+
 passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID,
     clientSecret:process.env.CLIENT_SECRET,
@@ -55,7 +62,7 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },async(accesstoken,refreshtoken,profile,done)=>{
         //these accesstoken and refreshtoken cannot be used by us so that's a problem
-        // console.log(profile);
+        
         var user=await User.findOne({googleId:profile.id});
     
         if(user==null){
@@ -95,6 +102,8 @@ passport.use(new GoogleStrategy({
   });
   passport.deserializeUser(async (userid,done)=>{
     const user=await User.findOne({_id:userid});
+    // console.log('deserialize user ');
+    // console.log(user);
     
     return done(null,user);
   })
@@ -114,10 +123,16 @@ passport.use(new GoogleStrategy({
 
   app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
  
+  app.get('/auth/status',(req,res)=>{
+    console.log(res);
+    
+    res.send(req.isAuthenticated());
+  })
+
   app.get('/',(req,res)=>{
   
     console.log('at /');
-    console.log(req.user);
+    console.log(req);
     if(req.isAuthenticated()){
         
         res.redirect('http://localhost:5173/'); 
@@ -127,6 +142,19 @@ passport.use(new GoogleStrategy({
     }
   })
   
+  app.get('/user',(req,res)=>{
+    console.log(req.isAuthenticated());
+    if(!req.isAuthenticated()){
+        console.log('not authenticaterd ask');
+        res.redirect('/google');
+    }
+    else{
+        console.log('ask and authenticated');
+        console.log(req.user);
+        res.send(req.user);
+        res.end();
+    }
+  })
 
   port=8000;
 
