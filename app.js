@@ -12,7 +12,7 @@
     
     4. code all the view's
     
-    5. design the mongoose schema
+    5. design the mongoose schema(done)
 
     6. implement findOrCreate logic in youtube for the token's to avoid unnecssary re-authorization
 
@@ -22,13 +22,113 @@
 
     9.create a component for tus upload (done)
 
+    10. learn how authentication would work(done)
+
+    11. implemebt authentication
+
+
+
 */
+require('dotenv').config();
 
 const express=require('express');
 const app=express();
+const mongoose=require('mongoose');
 
-port=8000;
+const User = mongoose.model('User',require('./schema.js').finalUserSchema);
+
+
+//--------------------------passport configuration section-----------------------
+const bcrypt=require('bcrypt');
+
+const passport=require('passport');
+const LocalStrategy=require('passport-local').Strategy;
+const GoogleStrategy=require('passport-google-oauth20').Strategy;
+const session=require('express-session');
+// console.log(process.env.CLIENT_ID);
+passport.use(new GoogleStrategy({
+    clientID:process.env.CLIENT_ID,
+    clientSecret:process.env.CLIENT_SECRET,
+    callbackURL:"http://localhost:8000/auth/google",
+    
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+  },async(accesstoken,refreshtoken,profile,done)=>{
+        //these accesstoken and refreshtoken cannot be used by us so that's a problem
+        console.log(profile);
+        var user=await User.findOne({googleId:profile.id});
+    
+        if(user==null){
+          await User.create({googleId:profile.id,username:profile.displayName,email:profile.emails[0].value}); 
+        }
+        user=await User.findOne({googleId:profile.id});
+      return done(null,user);
+   
+  }));
+  
+  
+  passport.use(new LocalStrategy({usernameField:'username',passwordField:'password'},async (username,password,done)=>{
+    try{
+      const user=await User.findOne({username:username});
+      console.log("here");
+      if(user==null){
+          done(null,false,{message:"no such user exists"});
+      }
+      else{
+        const flag=await bcrypt.compare(password,user.password);
+        if(flag){
+          done(null,user);
+        }
+        else{
+          done(null,false,{message:"password is incorrect"});
+        }
+      }
+     
+  }
+  catch{
+      done(null,false,{message:"something went wrong"});
+  }
+  }));
+  
+  passport.serializeUser((user,done)=>{
+    done(null,user._id);
+  });
+  passport.deserializeUser(async (userid,done)=>{
+    const user=await User.findOne({_id:userid});
+    console.log(user);
+    return done(null,user);
+  })
+  
+  app.use(session({
+   secret:'mahesh dalle',
+   resave:false,
+   saveUninitialized:false,
+  }));
+  
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.get('/google',passport.authenticate('google',{scope:['profile','email']})); //frontend make's a request here
+
+
+  app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
+ 
+  app.get('/',(req,res)=>{
+    console.log(req.isAuthenticated());
+    if(req.isAuthenticated()){
+        res.send('YES');
+    }
+    else{
+        res.send('N0');
+    }
+  })
+  
+  port=8000;
+
+
+
 
 app.listen(port,()=>{
     console.log('listening on port '+port);
 })
+
+mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});
