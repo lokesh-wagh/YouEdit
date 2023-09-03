@@ -4,7 +4,7 @@
 // port 5717 serves frontend
 // port 5000 send's to youtube
 // port 8000 would be the general backend port where mongodb talk's and othertrivial thing's would happen
-
+const path=require('path');
 const express = require('express');
 const fs = require('fs');
 const { default: mongoose } = require('mongoose');
@@ -29,7 +29,8 @@ app.get('/download',(req,res)=>{
 
 
 app.get('/stream', (req, res) => {
-  const filePath = __dirname+'/files/27f1dc60fd35b34e1bb535d02c1f4b79'; //-->change this hardcoded value
+  const filePath = __dirname+'/files/'+req.query.url; //-->change this hardcoded value
+  
   const stat = fs.statSync(filePath);//read stat's of the file synchronoulsy
   const fileSize = stat.size;// tell the source tag what the size would be
 
@@ -58,10 +59,46 @@ app.get('/stream', (req, res) => {
       fs.createReadStream(filePath).pipe(res);//pipe the entire video
   }
 });
-app.get('/thumbnail',(req,res)=>{
-  //this endpoint get's the thumbnail of the place where data is stored
-  
-})
+
+
+app.get('/thumbnail', (req, res) => {
+  console.log('here');
+  const filePath = path.join(__dirname, '/files/'+ req.query.url); // Construct the file path dynamically
+  const fileExtension = path.extname(filePath);
+
+  // Determine the content type based on the file extension
+  const contentType = getContentType(fileExtension);
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      console.error('Error reading thumbnail:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.writeHead(200, {
+        'Content-Type': contentType,
+      });
+      res.end(data);
+    }
+  });
+});
+
+// Function to determine content type based on file extension
+function getContentType(fileExtension) {
+  switch (fileExtension) {
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.png':
+      return 'image/png';
+    case '.gif':
+      return 'image/gif';
+    // Add more cases for other image formats if needed
+    default:
+      return 'application/octet-stream'; // Default to binary data
+  }
+}
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`); //listen on the specified port
 });

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Upload from './TusUpload'
 import Auth from './Auth'
+import Display from './Display';
 const send=axios.create({
     withCredentials:true //this ensure's that axio's is sending cookies along with the request
 
@@ -37,10 +38,10 @@ function App() {
     },[authenticated])
     if(authenticated==null){
         return (<div>
-            LOADER
+            LOADER MOST PROBABLY BACKEND IS DOWN
         </div>)
     }
-    return (authenticated==true?<Upload/>:<Auth onComplete={setAuthenticated}/>);
+    return (authenticated==true?<Display Thumbnail={'77aaf00b004ff194ecea69b85cf618eb.png'} Video={'7903e08b7d818b1e34acf5f1bb884117.mp4'}/>:<Auth onComplete={setAuthenticated}/>);
 }
 
 export default App;

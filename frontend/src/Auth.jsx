@@ -5,7 +5,7 @@ const send=axios.create({
 
 })
 
-export default function Auth ({onComplete}){
+export default function Auth (){
 
     function handleClick(){
         window.location.href = 'http://localhost:8000/google';

@@ -1,10 +1,11 @@
 /* 
     1. centralize all the 4 
-        for streaming a video make a endpoint redirect it to serve.js
-        for downloading make a endpoint redirect it
+      
+        for streaming a video make a endpoint redirect it to serve.js(done)
+        for downloading make a endpoint redirect it(done)
         for uploading a youtube create a endpoint redirect it
-        No endpoint for tus tus would be directly communicated by frontend itself
-
+        No endpoint for tus tus would be directly communicated by frontend itself(done)
+        changed my mind on redirecting
     2. integrate passport js , session to log the user's and editor's in(done)
     
     3. design a schema for all the  view's how they are going to work
@@ -16,7 +17,7 @@
 
     6. implement findOrCreate logic in youtube for the token's to avoid unnecssary re-authorization
 
-    7. find a way to get google id along with the token's so that you know whose access you have
+    7. find a way to get google id along with the token's so that you know whose access you have(done)
 
     8. implement crud operation's on mongoose schema in appropriate place's
 
@@ -124,7 +125,7 @@ passport.use(new GoogleStrategy({
   app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
  
   app.get('/auth/status',(req,res)=>{
-    console.log(res);
+    
     
     res.send(req.isAuthenticated());
   })
@@ -132,7 +133,7 @@ passport.use(new GoogleStrategy({
   app.get('/',(req,res)=>{
   
     console.log('at /');
-    console.log(req);
+   
     if(req.isAuthenticated()){
         
         res.redirect('http://localhost:5173/'); 
@@ -143,14 +144,14 @@ passport.use(new GoogleStrategy({
   })
   
   app.get('/user',(req,res)=>{
-    console.log(req.isAuthenticated());
+    
     if(!req.isAuthenticated()){
-        console.log('not authenticaterd ask');
+        //console.log('not authenticaterd ask');
         res.redirect('/google');
     }
     else{
-        console.log('ask and authenticated');
-        console.log(req.user);
+        //console.log('ask and authenticated');
+      
         res.send(req.user);
         res.end();
     }
