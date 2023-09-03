@@ -7,6 +7,7 @@
 
 const express = require('express');
 const fs = require('fs');
+const { default: mongoose } = require('mongoose');
 const app = express();
 const port = 3000;
 app.get('/download',(req,res)=>{
@@ -64,3 +65,5 @@ app.get('/thumbnail',(req,res)=>{
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`); //listen on the specified port
 });
+
+mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});

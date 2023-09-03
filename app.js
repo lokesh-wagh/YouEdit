@@ -36,7 +36,8 @@ const app=express();
 const mongoose=require('mongoose');
 
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
-
+const cors=require('cors')
+app.use(cors());
 
 //--------------------------passport configuration section-----------------------
 const bcrypt=require('bcrypt');
@@ -54,7 +55,7 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },async(accesstoken,refreshtoken,profile,done)=>{
         //these accesstoken and refreshtoken cannot be used by us so that's a problem
-        console.log(profile);
+        // console.log(profile);
         var user=await User.findOne({googleId:profile.id});
     
         if(user==null){
@@ -94,7 +95,7 @@ passport.use(new GoogleStrategy({
   });
   passport.deserializeUser(async (userid,done)=>{
     const user=await User.findOne({_id:userid});
-    console.log(user);
+    
     return done(null,user);
   })
   
@@ -102,6 +103,7 @@ passport.use(new GoogleStrategy({
    secret:'mahesh dalle',
    resave:false,
    saveUninitialized:false,
+  
   }));
   
   app.use(passport.initialize());
@@ -113,15 +115,19 @@ passport.use(new GoogleStrategy({
   app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
  
   app.get('/',(req,res)=>{
-    console.log(req.isAuthenticated());
+  
+    console.log('at /');
+    console.log(req.user);
     if(req.isAuthenticated()){
-        res.send('YES');
+        
+        res.redirect('http://localhost:5173/'); 
     }
     else{
-        res.send('N0');
+        res.redirect('/google')
     }
   })
   
+
   port=8000;
 
 

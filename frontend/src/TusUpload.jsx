@@ -1,6 +1,7 @@
 import {useRef, useState} from 'react';
 import * as tus from 'tus-js-client'
-
+ // upload component has no known bug's
+ 
 export default function Upload() {
     const [upload,setUpload]=useState(null);
     const [data,setData]=useState('no file selected');
