@@ -20,7 +20,7 @@
 require('dotenv').config();
 const fs=require('fs');
 
-const videoFilePath=__dirname+'/files/7903e08b7d818b1e34acf5f1bb884117.mp4'; //change this to upload certain video
+ //change this to upload certain video
 const CLIENT_ID = '246767017361-mtbn59kuptu1fck5deak517j21t4ul64.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'http://localhost:5000/google'; //change the url if needed
@@ -49,13 +49,14 @@ const youtubeServer = express();
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);//intiializing oauth object
 
 
-const authUrl = oauth2Client.generateAuthUrl({
-  access_type: 'offline',
-  scope: SCOPES,// heere we authorize ourselves to acces youtube
-});
+
 //login flow react to youtube
 youtubeServer.get('/login', (req, res) => {
-
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,// heere we authorize ourselves to acces youtube
+    state:JSON.stringify({url:req.query.url,})
+  });
   res.redirect(authUrl);  //redirect the guy to authorize
 });
 
@@ -85,9 +86,9 @@ youtubeServer.get('/google', async (req, res) => {
     })
     .then(async(response) => {
       const userProfile = response.data;
-      console.log('User profile:', userProfile.metadata);
+      
       googleid=userProfile.metadata.sources[0].id;
-      console.log(googleid);
+      console.log('google id is '+googleid);
       const user=await User.findOne({googleId:googleid});
       if(user==null){
         // res.send('User does not exist in database and was created');
@@ -97,18 +98,39 @@ youtubeServer.get('/google', async (req, res) => {
         user.Token=tokens;
         await user.save();
       }
+      const state=JSON.parse(req.query.state);
+      axios
+      .get(`http://localhost:5000/upload`,{params:{
+        url:state.url,
+        userid:googleid
+      }} )
+      .then((response) => {
+        // Handle the server's response here
+        
+        console.log('Server Response:', response.data);
+        
+      }
+      )
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error:', error.message);
+      });
+  
+      res.redirect('http://localhost:5173');
     })
    
-  
-
-    res.send('Authentication successful! You can close this window.');
+    
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Error during authentication');
   }
 });
+
+
 //upload flow  react to app app send's user name and file to be uploaded  details then youtube acceses them
 youtubeServer.get('/upload',async (req,res)=>{
+  const videoFilePath=__dirname+'/files/'+req.query.url;
+  console.log(req.query);
     const user=await User.findOne({googleId:req.query.userid});
     if(user==null){
       res.send('user not found');
@@ -150,12 +172,12 @@ youtubeServer.get('/upload',async (req,res)=>{
       },
     }, function(err, response) {
       if (err) {
-        console.log('The API returned an error: ' + err);
+        res.send('The API returned an error: ' + err);
         return;
       }
       console.log(response.data)
       // here you are supposed to handle thumbnail upload
-     
+    
       
     });
     }
@@ -163,8 +185,8 @@ youtubeServer.get('/upload',async (req,res)=>{
 
   mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});
 
-  youtubeServer.listen(process.env.youtubePort,()=>{
-    //listen on 5500
+  youtubeServer.listen(5000,()=>{
+    
     //when /login would be triggered the user would give the permission to upload the file and it would be uploaded
-    console.log('listening on '+process.env.youtubePort);
+    console.log('youtube is listening on '+5000);
   })

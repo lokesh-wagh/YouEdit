@@ -6,7 +6,7 @@
         for uploading a youtube create a endpoint redirect it
         No endpoint for tus tus would be directly communicated by frontend itself(done)
         changed my mind on redirecting
-        
+
     2. integrate passport js , session to log the user's and editor's in(done)
     
     3. design a schema for all the  view's how they are going to work
@@ -36,6 +36,7 @@ require('dotenv').config();
 const express=require('express');
 const app=express();
 const mongoose=require('mongoose');
+const axios=require('axios');
 
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
 const cors=require('cors')
@@ -143,7 +144,7 @@ passport.use(new GoogleStrategy({
         res.redirect('/google')
     }
   })
-  
+
   app.get('/user',(req,res)=>{
     
     if(!req.isAuthenticated()){

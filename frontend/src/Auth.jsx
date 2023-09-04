@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-const send=axios.create({
-    withCredentials:true //this ensure's that axio's is sending cookies along with the request
 
-})
 
 export default function Auth (){
 
