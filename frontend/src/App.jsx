@@ -41,7 +41,7 @@ function App() {
             LOADER MOST PROBABLY BACKEND IS DOWN
         </div>)
     }
-    return (authenticated==true?<Display Thumbnail={'77aaf00b004ff194ecea69b85cf618eb.png'} Video={'7903e08b7d818b1e34acf5f1bb884117.mp4'}/>:<Auth onComplete={setAuthenticated}/>);
+    return (authenticated==true?<Upload User={user==null?{googleId:'11231231'}:user} />:<Auth onComplete={setAuthenticated}/>);
 }
 
 export default App;

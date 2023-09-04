@@ -61,11 +61,11 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
     filePath:String,
     creationDate:Date,
     mimeType:String,
-    owner:userSchema , //will decide to put schema or something else in this
+    owner:String , //will decide to put schema or something else in this
 
 })
  const youtubeBundleSchema=new mongoose.Schema({
-    editor:userSchema,
+    editor:userSchema, //used everytime a editor upload's a video
     video:mediaSchema,
     thumbnail:mediaSchema,
     metaData:{
@@ -102,18 +102,6 @@ const finalUserSchema=new mongoose.Schema({
 })
 
 
-// export const editorSchema=new mongoose.Schema({
-//     userDetails:userSchema, //for displaying page for editor
-//     tasks:[videoTaskSchema], //exposed to frontend
-
-// })
-
-// export const creatorSchema=new mongoose.Schema({
-//     userDetails:userSchema,
-//     videoOrders:[videoTaskSchema],  //for displaying page for creator
-//     accessToken:String,             //exposed to frontend (the userDetailss and videoOrder's part)
-//     refreshToken:String,
-// })
 
 ////////////-----------------------------------------------///////////////////
 module.exports = {

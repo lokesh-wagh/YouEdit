@@ -3,19 +3,9 @@ const send=axios.create({
   withCredentials:true //this ensure's that axio's is sending cookies along with the request
 
 })
-function Display({ Video,Thumbnail }) {
+function Display({User,Video,Thumbnail }) {
   function handleClick(){
-  //   send
-  // .get('http://localhost:5000/login', { params: {url:Video} })
-  // .then((response) => {
-  //   // Handle the server's response here
-    
-  //   console.log('Server Response:', response.data);
-  // })
-  // .catch((error) => {
-  //   // Handle any errors that occurred during the request
-  //   console.error('Error:', error.message);
-  // });
+ 
   window.location.href = `http://localhost:5000/login?url=${Video}`;
   }
   return (

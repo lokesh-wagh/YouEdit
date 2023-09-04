@@ -1,9 +1,9 @@
 /* 
-    1. centralize all the 4 
+    1. centralize all the 4 (done)
       
         for streaming a video make a endpoint redirect it to serve.js(done)
         for downloading make a endpoint redirect it(done)
-        for uploading a youtube create a endpoint redirect it
+        for uploading a youtube create a endpoint redirect it(done)
         No endpoint for tus tus would be directly communicated by frontend itself(done)
         changed my mind on redirecting
 
@@ -16,7 +16,7 @@
     
     5. design the mongoose schema(done)
 
-    6. implement findOrCreate logic in youtube for the token's to avoid unnecssary re-authorization
+    6. implement findOrCreate logic in youtube for the token's to avoid unnecssary re-authorization(done/bypassed)
 
     7. find a way to get google id along with the token's so that you know whose access you have(done)
 
@@ -27,6 +27,10 @@
     10. learn how authentication would work(done)
 
     11. implement authentication(done)
+
+    12.perform the proper crud operation when a media is uploaded(done)
+
+    13.
 
 
 
@@ -149,7 +153,7 @@ passport.use(new GoogleStrategy({
     
     if(!req.isAuthenticated()){
         //console.log('not authenticaterd ask');
-        res.redirect('/google');
+        res.status(500).json({error:'not authenticated'});
     }
     else{
         //console.log('ask and authenticated');
