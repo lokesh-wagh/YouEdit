@@ -17,15 +17,16 @@
 */
 
 // Replace with your own credentials and desired scopes
+require('dotenv').config();
 const fs=require('fs');
 
-const videoFilePath=__dirname+'/files/27f1dc60fd35b34e1bb535d02c1f4b79.mp4'; //change this to upload certain video
+const videoFilePath=__dirname+'/files/7903e08b7d818b1e34acf5f1bb884117.mp4'; //change this to upload certain video
 const CLIENT_ID = '246767017361-mtbn59kuptu1fck5deak517j21t4ul64.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'http://localhost:5000/google'; //change the url if needed
+const axios=require('axios');
 
-
-const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];//add some more scopes if needeed
+const SCOPES = ['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/userinfo.profile'];//add some more scopes if needeed
 const { google } = require('googleapis');
 const express = require('express');
 
@@ -33,11 +34,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 
-const userSchema = new mongoose.Schema({
-  googleId: String,
-  accessToken: String,
-  refreshToken: String,
-});
+const userSchema = require('./schema').finalUserSchema;
 
 const User = mongoose.model('User', userSchema);
 
@@ -45,8 +42,8 @@ const User = mongoose.model('User', userSchema);
 
 
 
-const app = express();
-const port = 5000;
+const youtubeServer = express();
+
 
 
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);//intiializing oauth object
@@ -56,13 +53,13 @@ const authUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
   scope: SCOPES,// heere we authorize ourselves to acces youtube
 });
-
-app.get('/login', (req, res) => {
+//login flow react to youtube
+youtubeServer.get('/login', (req, res) => {
 
   res.redirect(authUrl);  //redirect the guy to authorize
 });
 
-app.get('/google', async (req, res) => {
+youtubeServer.get('/google', async (req, res) => {
   const { code } = req.query;
 
   try {
@@ -72,20 +69,60 @@ app.get('/google', async (req, res) => {
     const refreshToken = tokens.refresh_token; // get the tokens's
     var auth=oauth2Client;
     auth.credentials=tokens;
- 
+    console.log(tokens);
+    //we can use the refresh token to refresh our accesss however for a psychological perpective
+    // i want the creator  to physically consent me to upload the video
 
 
 
-    const user = new User({
-     
-      accessToken, //store tokens(give id and other detail's)
-      refreshToken,//would add some 
-    });
+    const people = google.people({ version: 'v1', auth:auth });
 
-    await user.save();
+    // Get the user's profile information
+    var googleid;
+    people.people.get({
+      resourceName: 'people/me',
+      personFields: 'metadata,names,emailAddresses',
+    })
+    .then(async(response) => {
+      const userProfile = response.data;
+      console.log('User profile:', userProfile.metadata);
+      googleid=userProfile.metadata.sources[0].id;
+      console.log(googleid);
+      const user=await User.findOne({googleId:googleid});
+      if(user==null){
+        // res.send('User does not exist in database and was created');
+        await User.create({googleId:googleid,Token:tokens});
+      }
+      else{
+        user.Token=tokens;
+        await user.save();
+      }
+    })
+   
+  
+
+    res.send('Authentication successful! You can close this window.');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Error during authentication');
+  }
+});
+//upload flow  react to app app send's user name and file to be uploaded  details then youtube acceses them
+youtubeServer.get('/upload',async (req,res)=>{
+    const user=await User.findOne({googleId:req.query.userid});
+    if(user==null){
+      res.send('user not found');
+      res.end();
+    }
+    else{
     const service = google.youtube('v3') //this service is used to upload
 
 
+    const tokens=user.Token;
+    const accessToken = tokens.access_token;
+    const refreshToken = user.refresh_token; // get the tokens's
+    var auth=oauth2Client;
+    auth.credentials=tokens;
 
     const title="rain";
     const description='editted rain  footage'
@@ -121,26 +158,13 @@ app.get('/google', async (req, res) => {
      
       
     });
-  
-
-    res.send('Authentication successful! You can close this window.');
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Error during authentication');
-  }
-});
-
-mongoose.connect('mongodb://127.0.0.1:27017/test', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-    //coonect to mongodb
+    }
   })
-  .catch((error) => {
-    console.error('MongoDB connection error:', error);
-  });
 
-  app.listen(port,()=>{
-    //listen on 5000
+  mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});
+
+  youtubeServer.listen(process.env.youtubePort,()=>{
+    //listen on 5500
     //when /login would be triggered the user would give the permission to upload the file and it would be uploaded
-    
+    console.log('listening on '+process.env.youtubePort);
   })

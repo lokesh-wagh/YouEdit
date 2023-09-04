@@ -90,9 +90,13 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
 
 })
 const finalUserSchema=new mongoose.Schema({
-    ...userSchema.obj,
-    accessToken:String,
-    refreshToken:String,
+    username:String,
+    googleId:String,
+    password:String,
+    email:String,
+    role:String,
+    profilePic:String,//
+    Token:Object,
     tasks:[videoTaskSchema],
     videoOrders:[videoTaskSchema],  
 })
