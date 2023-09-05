@@ -4,9 +4,13 @@ const send=axios.create({
 
 })
 function Display({User,Video,Thumbnail }) {
-  function handleClick(){
+  function handleClickUpload(){
  
   window.location.href = `http://localhost:5000/login?url=${Video}`;
+  }
+  function handleClickDownload(){
+    // send.get('http://localhost:3000/download',{params:{url:Video}});
+    window.location.href=`http://localhost:3000/download?url=${Video}`;
   }
   return (
     <div>
@@ -20,7 +24,8 @@ function Display({User,Video,Thumbnail }) {
         <h2>Image Display</h2>
         <img src={'http://localhost:3000/thumbnail?url='+Thumbnail} alt="Image Description" />
     </div>
-    <button onClick={handleClick}>Upload</button>
+    <button onClick={handleClickUpload}>Upload</button>
+    <button onClick={handleClickDownload}>Download</button>
     </div>
   );
 }

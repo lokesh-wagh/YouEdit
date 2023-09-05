@@ -11,9 +11,9 @@ const { default: mongoose } = require('mongoose');
 const app = express();
 const port = 3000;
 app.get('/download',(req,res)=>{
-   
-        const filePath = __dirname+'/files/27f1dc60fd35b34e1bb535d02c1f4b79'; //------->change both of these hardcoded value's 
-        const fileName = 'ghanta.mp4'; 
+        console.log(req.query);
+        const filePath = __dirname+'/files/'+req.query.url; //------->change both of these hardcoded value's 
+        const fileName ='temp.mp4'; 
       
        
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
@@ -23,7 +23,7 @@ app.get('/download',(req,res)=>{
        
         const fileStream = fs.createReadStream(filePath); //create a readstream from the file
         fileStream.pipe(res);// pipe the read streak to response so that it can be downloaded
-
+        
      
 })
 
