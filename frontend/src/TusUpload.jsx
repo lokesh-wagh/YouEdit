@@ -1,6 +1,11 @@
 import {useRef, useState} from 'react';
 import * as tus from 'tus-js-client'
  // upload component has no known bug's
+ /*
+  this component solely handles the upload to the website
+  upload is of all type
+  
+ */
  
 export default function Upload({User}) {
 

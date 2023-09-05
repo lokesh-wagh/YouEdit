@@ -1,8 +1,9 @@
-import axios from "axios";
-const send=axios.create({
-  withCredentials:true //this ensure's that axio's is sending cookies along with the request
+/* this component is has a display to show selected video
+   it show's the thumbnail
+   it show's give's  option to download a video 
+   it has a option to upload the video
+  */
 
-})
 function Display({User,Video,Thumbnail }) {
   function handleClickUpload(){
  

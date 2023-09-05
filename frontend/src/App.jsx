@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Upload from './TusUpload'
+import {Route,Routes} from 'react-router-dom';
+import  Upload  from './TusUpload';
 import Auth from './Auth'
-import Display from './Display';
+import CreatorDashboard from './CreatorDashboard'
+import LandingPage from './LandingPage'
+import CreateTask from './CreateTask';
+
 const send=axios.create({
     withCredentials:true //this ensure's that axio's is sending cookies along with the request
 
@@ -41,7 +45,15 @@ function App() {
             LOADER MOST PROBABLY BACKEND IS DOWN
         </div>)
     }
-    return (authenticated==true?<Display Video={'b94ce0ffd5039431160207baf4846b01.mp4'} Thumbnail={'21424075181d3ab092edb389a2aed317.png'}></Display>:<Auth onComplete={setAuthenticated}/>);
+    return (authenticated==true?<><Routes>
+            <Route path='/' element={<LandingPage/>}></Route>
+            <Route path='/creator' element={<CreatorDashboard user={user}/>}></Route>
+            <Route path='/upload' element={<Upload User={user==null?{googleId:'11231231'}:user} />}/>
+            <Route path='/creator/create-task' element={<CreateTask User={user==null?{googleId:'11231231'}:user}/>}></Route>
+        </Routes></>:<Auth></Auth>);
 }
 
 export default App;
+
+//<Display Thumbnail={'77aaf00b004ff194ecea69b85cf618eb.png'} Video={'7903e08b7d818b1e34acf5f1bb884117.mp4'}/>
+//<Upload User={user==null?{googleId:'11231231'}:user} />

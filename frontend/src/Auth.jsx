@@ -1,4 +1,7 @@
-import axios from 'axios';
+/* 
+this component handle's the  intial authentication and login
+can add other thing's to this
+*/
 
 
 
