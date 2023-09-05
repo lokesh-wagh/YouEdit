@@ -7,6 +7,8 @@ const mongoose=require('mongoose');
 const mediaSchema=require('./schema').mediaSchema;
 const Media=mongoose.model('Media',mediaSchema);
 
+const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
+
 ///thiss storage area can also be replaced by s3 and
 
 const host = '127.0.0.1' // select local host for server
@@ -28,8 +30,18 @@ server.on(EVENTS.POST_FINISH,async(req,res,upload)=>{//EVENTS contains all the e
 
     
   
-      await Media.create({fileName:upload.id,filePath:'C:/Users/lokes/Desktop/YouEdit/storage'+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],mimeType:upload.metadata.filetype,creationDate:new Date(),owner:upload.metadata.id})
-   
+      const recent=await Media.create({fileName:upload.id,filePath:'C:/Users/lokes/Desktop/YouEdit/storage'+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],mimeType:upload.metadata.filetype,creationDate:new Date(),owner:upload.metadata.id})
+      //inserting the media in appropriate place
+      const task=await VideoTask.findOne({id:upload.metadata.TaskCode});
+      console.log(task);
+      console.log(upload.metadata);
+      if(upload.metadata.role=='orignalvideo'){
+        task.orignalVideo=recent;
+      }
+      else{
+        task.resources.push({media:recent,description:"not decided yet"});
+      }
+      await task.save();
   
 }
 catch(e){

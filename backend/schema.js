@@ -79,6 +79,7 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
 
 // ------------- exposed to frontend section ------------------///////////
  const videoTaskSchema=new mongoose.Schema({
+    id:String,
     creator:userSchema,
     resources:[{media:mediaSchema,description:String}],
     orignalVideo:mediaSchema,

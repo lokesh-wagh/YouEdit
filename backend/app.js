@@ -42,7 +42,9 @@ const app=express();
 const mongoose=require('mongoose');
 const axios=require('axios');
 
+const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
+
 const cors=require('cors')
 app.use(cors());
 app.use((req, res, next) => {
@@ -128,6 +130,7 @@ passport.use(new GoogleStrategy({
   app.get('/google',passport.authenticate('google',{scope:['profile','email']})); //frontend make's a request here
 
 
+
   app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
  
   app.get('/auth/status',(req,res)=>{
@@ -162,7 +165,32 @@ passport.use(new GoogleStrategy({
         res.end();
     }
   })
+  app.get('/createtask',async (req,res)=>{
+     const task=await VideoTask.create({creator:req.user,id:code()});
+     res.send(task.id);
+  })
 
+  app.get('/finishtask',async (req,res)=>{
+    console.log(req.query);
+
+    const task=await VideoTask.findOne({id:req.query.code});
+    const user=await User.findOne({googleId:req.query.id});
+    const count=0;
+    console.log(user.tasks);
+    for(let i=0;i<user.tasks.length;i++){
+      
+      if(user.tasks[i].code==req.query.id){
+      
+        count++
+      }
+    }
+    
+    if(count==0){
+      user.tasks.push(task);
+      user.save()
+    }
+    res.end();
+  })
   port=8000;
 
 
@@ -172,4 +200,13 @@ app.listen(port,()=>{
     console.log('listening on port '+port);
 })
 
+function code(){//random code is genertaed
+  var otp="";
+  const rounds=12;
+    for(let i=0;i<rounds;i++){
+   otp=otp+Math.floor(Math.random()*10);
+  
+  }
+  return otp;
+}
 mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});

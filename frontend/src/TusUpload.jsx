@@ -7,7 +7,7 @@ import * as tus from 'tus-js-client'
   
  */
  
-export default function Upload({User}) {
+export default function Upload({User,code,role}) {
 
     const [upload,setUpload]=useState(null);
     const [data,setData]=useState('no file selected');
@@ -15,7 +15,8 @@ export default function Upload({User}) {
     const pauseButtonRef=useRef(null);
     const resumeButtonRef=useRef(null);
     const googleid=User.googleId;
-  function handleFileChange(){
+  
+    function handleFileChange(){
    
             
 
@@ -28,13 +29,17 @@ export default function Upload({User}) {
           setData(inputRef.current.files[0].name+' is selected'); //display that file is selected
         }
         setUpload (new tus.Upload(inputRef.current.files[0], {
-            endpoint: "http://localhost:1080/files/",
+            endpoint: "http://localhost:1080/storage/",
             retryDelays: [0, 3000, 5000, 10000, 20000],
             metadata: {
               filename: inputRef.current.files[0].name,
               filetype:inputRef.current.files[0].type,
               id:googleid,
+              TaskCode:code,
+              role:role,
             },
+            chunkSize:100000,
+            removeFingerprintOnSuccess:true,
             onError: function(error) {
               setData("Failed because: " + error) //display error
             },
