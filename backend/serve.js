@@ -5,15 +5,22 @@
 // port 5000 send's to youtube
 // port 8000 would be the general backend port where mongodb talk's and othertrivial thing's would happen
 const path=require('path');
+const archiver=require('archiver');
+
 const express = require('express');
 const fs = require('fs');
+
 const { default: mongoose } = require('mongoose');
+const Media=mongoose.model('Media',require('./schema').mediaSchema);
+const VideoTask=mongoose.model('Videotasks',require('./schema').videoTaskSchema);
+const User=mongoose.model('User',require('./schema').finalUserSchema);
+
 const app = express();
 const port = 3000;
-app.get('/download',(req,res)=>{
-        console.log(req.query);
-        const filePath = __dirname+'/files/'+req.query.url; //------->change both of these hardcoded value's 
-        const fileName ='videoDownload.mp4'; 
+app.get('/download',async(req,res)=>{
+        const file=await Media.findOne({fileName:req.query.id});
+        const filePath = file.filePath //------->change both of these hardcoded value's 
+        const fileName =file.fileName+'.'+file.mimeType.split('/'); 
       
        
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
@@ -27,9 +34,45 @@ app.get('/download',(req,res)=>{
      
 })
 
+app.get('/delete',async(req,res)=>{
+  console.log(req.query);
+  const file=await Media.findOne({fileName:req.query.fileid});
+  
+  const videotask=await VideoTask.findOne({id:req.query.taskid});
 
-app.get('/stream', (req, res) => {
-  const filePath = __dirname+'/files/'+req.query.url; //-->change this hardcoded value
+  const user=await User.findOne({googleId:req.query.userid});
+  const filePath=file.filePath;
+  if (fs.existsSync(filePath)) {
+    // Use fs.unlink to delete the file
+    fs.unlink(filePath,async (err) => {
+      if (err) {
+        console.error('Error deleting file:', err);
+      } else {
+        user.tasks.forEach((task) => {
+          if (task.id == req.query.taskid) {
+            
+            task.resources = task.resources.filter((resource) => resource.media.fileName !== req.query.fileid);
+          }
+        });
+        videotask.resources = videotask.resources.filter((resource) => resource.media.fileName !== req.query.fileid);
+        await Media.deleteOne({fileName:req.query.fileid});
+        
+        await videotask.save();
+        await user.save();
+        res.status(200);
+        console.log('File deleted successfully');
+      }
+    });
+  } else {
+    res.status(400);
+    console.log('File does not exist.');
+  }
+  
+})
+app.get('/stream', async(req, res) => {
+        const file=await Media.findOne({fileName:req.query.id});
+        const filePath = file.filePath //------->change both of these hardcoded value's 
+        const fileName =file.fileName+'.'+file.mimeType.split('/'); 
   
   const stat = fs.statSync(filePath);//read stat's of the file synchronoulsy
   const fileSize = stat.size;// tell the source tag what the size would be
@@ -61,9 +104,10 @@ app.get('/stream', (req, res) => {
 });
 
 
-app.get('/thumbnail', (req, res) => {
-  console.log('here');
-  const filePath = path.join(__dirname, '/files/'+ req.query.url); // Construct the file path dynamically
+app.get('/thumbnail',async (req, res) => {
+        const file=await Media.findOne({fileName:req.query.id});
+        const filePath = file.filePath //------->change both of these hardcoded value's 
+        const fileName =file.fileName+'.'+file.mimeType.split('/'); 
   const fileExtension = path.extname(filePath);
 
   // Determine the content type based on the file extension
@@ -97,6 +141,48 @@ function getContentType(fileExtension) {
       return 'application/octet-stream'; // Default to binary data
   }
 }
+app.get('/download-zip', async(req, res) => {
+  // console.log(req.query);
+  const tasks=await VideoTask.findOne({id:req.query.id});
+  if(tasks!=null){    // console.log(tasks);
+    const resources =tasks.resources;
+  
+  
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename=example.zip');
+  
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, 
+    });
+  
+  
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') {
+    
+        console.warn(err.message);
+      } else {
+    
+        throw err;
+      }
+    });
+  
+    archive.on('error', (err) => {
+      throw err;
+    });
+  
+    archive.pipe(res);
+    console.log(resources);
+    resources.forEach((resource) => {
+      const file = path.basename(resource.media.filePath);
+      archive.file(resource.media.filePath, { name: file }); 
+    });
+  
+  
+    archive.finalize();
+}
+});
+
 
 
 app.listen(port, () => {

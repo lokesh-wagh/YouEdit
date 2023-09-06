@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {Route,Routes} from 'react-router-dom';
 import  Upload  from './TusUpload';
 import Auth from './Auth'
+import PreviousTask from './PreviousTask'
 import CreatorDashboard from './CreatorDashboard'
 import LandingPage from './LandingPage'
 import CreateTask from './CreateTask';
@@ -40,6 +41,14 @@ function App() {
             })
         }
     },[authenticated])
+    if(user==null){
+        send.get('http://localhost:8000/user').then((res)=>{
+                 //if authenticated get the user detail's and true
+                setUser(res.data);
+            }).catch((err)=>{
+                console.log(err.message);
+            })
+    }
     if(authenticated==null){
         return (<div>
             LOADER MOST PROBABLY BACKEND IS DOWN
@@ -50,6 +59,8 @@ function App() {
             <Route path='/creator' element={<CreatorDashboard user={user}/>}></Route>
            
             <Route path='/creator/create-task' element={<CreateTask User={user==null?{googleId:'11231231'}:user}/>}></Route>
+            <Route path='/creator/previous-tasks' element={<PreviousTask User={user==null?{googleId:'11231231'}:user} tasks={user.tasks}/>}/>
+            
         </Routes></>:<Auth></Auth>);
 }
 

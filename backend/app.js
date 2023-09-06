@@ -10,7 +10,7 @@
     2. integrate passport js , session to log the user's and editor's in(done)
     
     3. design a schema for all the  view's how they are going to work
-        who will interact with what and so on
+        who will interact with what and so on (done)
     
     4. code all the view's
     
@@ -30,7 +30,13 @@
 
     12.perform the proper crud operation when a media is uploaded(done)
 
-    13.
+    13.code previous task view
+
+    14.code hire view
+
+    15.code editor dashboard
+
+    16.design editor side
 
 
 
@@ -41,6 +47,7 @@ const express=require('express');
 const app=express();
 const mongoose=require('mongoose');
 const axios=require('axios');
+;
 
 const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
@@ -193,9 +200,7 @@ passport.use(new GoogleStrategy({
   })
   port=8000;
 
-
-
-
+ 
 app.listen(port,()=>{
     console.log('listening on port '+port);
 })
