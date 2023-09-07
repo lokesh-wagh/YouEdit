@@ -30,7 +30,9 @@
 
     12.perform the proper crud operation when a media is uploaded(done)
 
-    13.code previous task view
+    13.code previous task view(done)
+
+    debug all of creator view's
 
     14.code hire view
 
@@ -38,7 +40,11 @@
 
     16.design editor side
 
+    17.create a design to beautify entire website(where to nest which component)
 
+    18.apply styling
+
+    19.decide on which external UI to use
 
 */
 require('dotenv').config();

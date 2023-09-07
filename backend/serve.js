@@ -7,6 +7,9 @@
 const path=require('path');
 const archiver=require('archiver');
 
+const cors=require('cors')
+
+
 const express = require('express');
 const fs = require('fs');
 
@@ -17,10 +20,20 @@ const User=mongoose.model('User',require('./schema').finalUserSchema);
 
 const app = express();
 const port = 3000;
+
+app.use(cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Replace with your client's origin
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies)
+    next();
+  });
+
 app.get('/download',async(req,res)=>{
         const file=await Media.findOne({fileName:req.query.id});
         const filePath = file.filePath //------->change both of these hardcoded value's 
-        const fileName =file.fileName+'.'+file.mimeType.split('/'); 
+        const fileName =file.fileName+'.'+file.mimeType.split('/')[1]; 
       
        
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
@@ -37,12 +50,18 @@ app.get('/download',async(req,res)=>{
 app.get('/delete',async(req,res)=>{
   console.log(req.query);
   const file=await Media.findOne({fileName:req.query.fileid});
+  if(file==null){
+    res.status(404);
+    res.send('not found');
+    res.end();
+    return;
+  }
   
   const videotask=await VideoTask.findOne({id:req.query.taskid});
 
   const user=await User.findOne({googleId:req.query.userid});
   const filePath=file.filePath;
-  if (fs.existsSync(filePath)) {
+  if(fs.existsSync(filePath)) {
     // Use fs.unlink to delete the file
     fs.unlink(filePath,async (err) => {
       if (err) {
@@ -60,6 +79,8 @@ app.get('/delete',async(req,res)=>{
         await videotask.save();
         await user.save();
         res.status(200);
+        res.send('success');
+        res.end();
         console.log('File deleted successfully');
       }
     });
