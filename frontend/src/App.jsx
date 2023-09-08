@@ -61,7 +61,8 @@ function App() {
            
             <Route path='/creator/create-task' element={<CreateTask User={user==null?{googleId:'11231231'}:user}/>}></Route>
             <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user==null?{googleId:'11231231'}:user} tasks={user.tasks}/>}/>
-            <Route path='/editor' element={<EditorDashboard User={user==null?{googleId:'11231231'}:user} orders={user==null?{}:user.tasks}/>}></Route>
+            <Route path='/editor' element={<EditorDashboard User={user==null?{googleId:'11231231'}:user} orders={user==null?{}:user.videoOrdersAssigned
+}/>}></Route>
         </Routes></>:<Auth></Auth>);
 }
 
