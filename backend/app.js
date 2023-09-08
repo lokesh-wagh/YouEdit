@@ -245,12 +245,55 @@ app.get('/finishbundle',async(req,res)=>{
   res.end();
 })
 
+app.get('/hireList',async (req,res)=>{
+  try {///here implement search engine logic
+   
+    const firstThreeUsers = await User.find().limit(3);
+
+    res.send(firstThreeUsers);
+  } catch (error) {
+    console.error('Error fetching first three users:', error);
+    throw error; 
+  }
+})
+
+app.get('/hire',async (req,res)=>{
+  console.log(req.query);
+  const user=await User.findOne({googleId:req.query.ownerid});
+  const editor=await User.findOne({googleId:req.query.editorid});
+  for(let i=0;i<user.tasks.length;i++){
+    if(user.tasks[i].id==req.query.taskid){
+      var count=0;
+      for(let j=0;j<user.tasks[i].editors.length;j++){
+        if(user.tasks[i].editors[j].googleId==req.query.editorid){
+          count=1;
+        }
+      }
+      if(count==0){
+        user.tasks[i].editors.push(editor);
+        var task=await VideoTask.findOne({id:user.tasks[i].id});
+        task.editors=user.tasks.editors;
+        editor.videoOrdersAssigned={order:task,ownerid:user.googleId};
+        await user.save();
+        await task.save();
+        await editor.save();
+       
+       
+      }
+    }
+  }
+ 
+  
+  res.send('success')
+})
   port=8000;
 
  
 app.listen(port,()=>{
     console.log('listening on port '+port);
 })
+
+
 
 function code(){//random code is genertaed
   var otp="";
