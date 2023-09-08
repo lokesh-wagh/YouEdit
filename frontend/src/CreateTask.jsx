@@ -13,7 +13,9 @@ export default function CreateTask({ User }) {
       axios.get('http://localhost:8000/finishtask',{params:{
         code:taskCode,
         id:User.googleId,
-      }}) 
+      }}).then(()=>{
+        window.location.href='http://localhost:5173/creator';
+      })
     } 
     useEffect(()=>{
       axios.get('http://localhost:8000/createtask').then((res)=>{

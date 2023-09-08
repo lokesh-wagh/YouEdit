@@ -7,7 +7,7 @@ import * as tus from 'tus-js-client'
   
  */
  
-export default function Upload({User,code,role}) {
+export default function Upload({User,code,role,bundlereciever,ycode}) {
 
     const [upload,setUpload]=useState(null);
     const [data,setData]=useState('no file selected');
@@ -37,6 +37,8 @@ export default function Upload({User,code,role}) {
               id:googleid,
               TaskCode:code,
               role:role,
+              bundlereciever:bundlereciever==null?'nobody':bundlereciever,
+              YoutubeCode:ycode==null?'nobody':ycode,
             },
             chunkSize:100000,
             removeFingerprintOnSuccess:true,

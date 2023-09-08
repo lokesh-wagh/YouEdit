@@ -101,7 +101,7 @@ const finalUserSchema=new mongoose.Schema({
     Token:Object,
     tasks:[videoTaskSchema],//given by the user to editors
     videoOrdersUploaded:[youtubeBundleSchema],//editor uploaded will be here
-    videoOrdersAssigned:[{order:videoTaskSchema,userid:String}],//editor's would see from these order's
+    videoOrdersAssigned:[{order:videoTaskSchema,ownerid:String}],//editor's would see from these order's
 })
 
 

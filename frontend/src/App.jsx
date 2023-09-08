@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {Route,Routes} from 'react-router-dom';
-import  Upload  from './TusUpload';
+
 import Auth from './Auth'
 import PreviousTask from './PreviousTask'
 import CreatorDashboard from './CreatorDashboard'
 import LandingPage from './LandingPage'
 import CreateTask from './CreateTask';
+import EditorDashboard from './Editordashboard'
 
 const send=axios.create({
     withCredentials:true //this ensure's that axio's is sending cookies along with the request
@@ -15,7 +16,7 @@ const send=axios.create({
 function App() {
     const [user,setUser]=useState(null);
     const [authenticated,setAuthenticated]=useState(null);
-    console.log(user);
+    
     useEffect(()=>{
         send.get('http://localhost:8000/auth/status'
             )
@@ -60,7 +61,7 @@ function App() {
            
             <Route path='/creator/create-task' element={<CreateTask User={user==null?{googleId:'11231231'}:user}/>}></Route>
             <Route path='/creator/previous-tasks' element={<PreviousTask User={user==null?{googleId:'11231231'}:user} tasks={user.tasks}/>}/>
-            
+            <Route path='/editor' element={<EditorDashboard User={user==null?{googleId:'11231231'}:user} orders={user==null?{}:user.tasks}/>}></Route>
         </Routes></>:<Auth></Auth>);
 }
 

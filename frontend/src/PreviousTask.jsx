@@ -15,10 +15,12 @@ function TaskManager({ tasks ,User}) {
   };
 
   const handleDownloadVideo = () => {
+    window.location.href=`http://localhost:3000/download?id=${currentTask.orignalVideo.fileName}`;
     console.log('Download video');
   };
 
   const handleDownloadResources = () => {
+    window.location.href=`http://localhost:3000/download-zip?id=${currentTask.id}`
     console.log('Download resources');
   };
 
@@ -26,20 +28,22 @@ function TaskManager({ tasks ,User}) {
     // Send a GET request to delete the resource
     axios.get(`http://localhost:3000/delete?fileid=${id}&userid=${userid}&taskid=${taskid}`)
       .then((response) => {
-        if (response.status === 200) {
+        console.log(response);
+
+        if (response.status == 200) {
           // Resource deleted successfully, update the current task's resources
           if (currentTask) {
-            const updatedResources = currentTask.resources.filter((resource) => resource.media.id !== id);
+            const updatedResources = currentTask.resources.filter((resource) => resource.media.fileName !== id);
             setCurrentTask({
               ...currentTask,
               resources: updatedResources,
             });
             console.log(`Resource with ID ${id} deleted successfully.`);
           }
-        } else {
-          // Handle errors here
-          console.error(`Error deleting resource with ID ${id}.`);
         }
+          // Handle errors here
+          // console.error(`Error deleting resource with ID ${id}.`);
+        // }
       })
       .catch((error) => {
         console.error(`Error deleting resource: ${error}`);
@@ -72,6 +76,7 @@ function TaskManager({ tasks ,User}) {
       ) : (
         <div>
           {tasks.map((task, index) => (
+            
             <div key={index}>
               <h2>Task {index + 1}</h2>
               <video src={`http://localhost:3000/stream?id=${task.orignalVideo.fileName

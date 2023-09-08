@@ -125,8 +125,8 @@ passport.use(new GoogleStrategy({
   });
   passport.deserializeUser(async (userid,done)=>{
     const user=await User.findOne({_id:userid});
-    // console.log('deserialize user ');
-    // console.log(user);
+   
+
     
     return done(null,user);
   })
@@ -156,7 +156,8 @@ passport.use(new GoogleStrategy({
   app.get('/',(req,res)=>{
   
     console.log('at /');
-   
+    
+
     if(req.isAuthenticated()){
         
         res.redirect('http://localhost:5173/'); 
@@ -169,11 +170,11 @@ passport.use(new GoogleStrategy({
   app.get('/user',(req,res)=>{
     
     if(!req.isAuthenticated()){
-        //console.log('not authenticaterd ask');
+       
         res.status(500).json({error:'not authenticated'});
     }
     else{
-        //console.log('ask and authenticated');
+       
       
         res.send(req.user);
         res.end();
@@ -185,7 +186,8 @@ passport.use(new GoogleStrategy({
   })
 
   app.get('/finishtask',async (req,res)=>{
-    console.log(req.query);
+   
+
 
     const task=await VideoTask.findOne({id:req.query.code});
     const user=await User.findOne({googleId:req.query.id});
@@ -206,27 +208,40 @@ passport.use(new GoogleStrategy({
     res.end();
   })
 
+
 app.get('/createbundle',async(req,res)=>{
     const bundle=await YoutubeBundle.create({editor:req.user,id:code()});
      res.send(bundle.id);
 })
 app.get('/finishbundle',async(req,res)=>{
+  
   const bundle=await YoutubeBundle.findOne({id:req.query.code});
-  const user=await User.findOne({googleId:req.query.id});
-  const count=0;
-  console.log(user.videoOrders);
-  for(let i=0;i<user.videoOrders.length;i++){
+  const task=await VideoTask.findOne({id:bundle.taskid});
+  const user=await User.findOne({googleId:req.query.id}); //here user represent's the owner
+  
+  var count=0;
+  
+  console.log(bundle);
+  console.log(task);
+  console.log(user);
+  for(let i=0;i<task.editedVideo.length;i++){
     
-    if(user.videoOrders[i].id==req.query.id){
-    
-      count++
+    if(task.editedVideo[i].id==req.query.code){
+      task.editedVideo[i]=bundle;
+      count=1;      
     }
   }
   
   if(count==0){
-    user.videoOrders.push(bundle);
-    user.save()
+    task.editedVideo.push(bundle);
+    await  task.save();
   }
+  for(let i=0;i<user.tasks.length;i++){
+    if(user.tasks[i].id==bundle.taskid){
+      user.tasks[i]=task;
+    }
+  }
+  await user.save();
   res.end();
 })
 

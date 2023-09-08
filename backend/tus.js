@@ -59,7 +59,7 @@ server.on(EVENTS.POST_FINISH,async(req,res,upload)=>{//EVENTS contains all the e
           console.log('bundle found');
         }
         bundle.thumbnail=recent;
-
+        bundle.taskid=upload.metadata.TaskCode;
         for(let i=0;i<user.videoOrdersUploaded.length;i++){
           if(user.videoOrdersUploaded[i].taskid==upload.metadata.TaskCode){
             user.videoOrdersUploaded[i]=bundle;
