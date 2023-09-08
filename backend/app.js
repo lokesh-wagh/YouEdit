@@ -32,13 +32,13 @@
 
     13.code previous task view(done)
 
-    debug all of creator view's
+    debug all of creator view's(done)
 
-    14.code hire view
+    14.code hire view (only hire view and dashboard is needed for editor)
 
-    15.code editor dashboard
+    15.code editor dashboard with list's then a download video button a download resource button and a upplooad button that change's the view
 
-    16.design editor side
+    16.design editor side(done)
 
     17.create a design to beautify entire website(where to nest which component)
 
@@ -57,6 +57,7 @@ const axios=require('axios');
 
 const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
+const YoutubeBundle=mongoose.model('Bundle',require('./schema.js').youtubeBundleSchema);
 
 const cors=require('cors')
 app.use(cors());
@@ -204,6 +205,31 @@ passport.use(new GoogleStrategy({
     }
     res.end();
   })
+
+app.get('/createbundle',async(req,res)=>{
+    const bundle=await YoutubeBundle.create({editor:req.user,id:code()});
+     res.send(bundle.id);
+})
+app.get('/finishbundle',async(req,res)=>{
+  const bundle=await YoutubeBundle.findOne({id:req.query.code});
+  const user=await User.findOne({googleId:req.query.id});
+  const count=0;
+  console.log(user.videoOrders);
+  for(let i=0;i<user.videoOrders.length;i++){
+    
+    if(user.videoOrders[i].id==req.query.id){
+    
+      count++
+    }
+  }
+  
+  if(count==0){
+    user.videoOrders.push(bundle);
+    user.save()
+  }
+  res.end();
+})
+
   port=8000;
 
  

@@ -65,6 +65,7 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
 
 })
  const youtubeBundleSchema=new mongoose.Schema({
+    id:String,
     editor:userSchema, //used everytime a editor upload's a video
     video:mediaSchema,
     thumbnail:mediaSchema,
@@ -73,8 +74,8 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
             description:String,
             title:String,
 
-        }
-
+        },
+    taskid:String,
 })
 
 // ------------- exposed to frontend section ------------------///////////
@@ -98,8 +99,9 @@ const finalUserSchema=new mongoose.Schema({
     role:String,
     profilePic:String,//
     Token:Object,
-    tasks:[videoTaskSchema],
-    videoOrders:[videoTaskSchema],  
+    tasks:[videoTaskSchema],//given by the user to editors
+    videoOrdersUploaded:[youtubeBundleSchema],//editor uploaded will be here
+    videoOrdersAssigned:[{order:videoTaskSchema,userid:String}],//editor's would see from these order's
 })
 
 
