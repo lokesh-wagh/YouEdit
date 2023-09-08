@@ -25,7 +25,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
   };
   function handleFinish(){
     axios.get('http://localhost:8000/finishbundle',{params:{code:ycode,
-  id:User.googleId}}).then((res)=>{
+  id:currentTask.ownerid}}).then((res)=>{
     console.log(res.data);
     window.location.href='http://localhost:5173/editor';
   })

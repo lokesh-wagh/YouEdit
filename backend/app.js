@@ -36,7 +36,7 @@
 
     14.code hire view (only hire view and dashboard is needed for editor)
 
-    15.code editor dashboard with list's then a download video button a download resource button and a upplooad button that change's the view
+    15.code editor dashboard with list's then a download video button a download resource button and a upplooad button that change's the view(done)
 
     16.design editor side(done)
 
@@ -44,7 +44,9 @@
 
     18.apply styling
 
-    19.decide on which external UI to use
+    19.decide on which external UI to use(done)
+
+    20.design finalize view for creator
 
 */
 require('dotenv').config();
