@@ -21,8 +21,7 @@ require('dotenv').config();
 const fs=require('fs');
 
  //change this to upload certain video
-const CLIENT_ID = '246767017361-mtbn59kuptu1fck5deak517j21t4ul64.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
+
 const REDIRECT_URI = 'http://localhost:5000/google'; //change the url if needed
 const axios=require('axios');
 
@@ -46,7 +45,7 @@ const youtubeServer = express();
 
 
 
-const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);//intiializing oauth object
+const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID_YOUTUBE, process.env.CLIENT_SECRET_YOUTUBE, REDIRECT_URI);//intiializing oauth object
 
 /*
   final flow
