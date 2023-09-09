@@ -48,6 +48,9 @@
 
     20.design finalize view for creator
 
+    21. code finalize view for creator (show all the edited video create a api request for the same)
+
+    22.  figure out how to use youtube .js to do the same
 */
 require('dotenv').config();
 

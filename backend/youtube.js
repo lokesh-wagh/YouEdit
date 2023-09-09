@@ -48,21 +48,30 @@ const youtubeServer = express();
 
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);//intiializing oauth object
 
+/*
+  final flow
+  from upload button ({taskid,bundleid,and userid,editorid}) ye ayaega
+  sara data stringify hoke state main jayega
+  phir stringified data json main convert hoke we after getting access token we will call upload and procced as normal
+  then close this request
+*/
 
 
 //login flow react to youtube
 youtubeServer.get('/login', (req, res) => {
+  console.log('at login')
+  console.log(req.query);
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,// heere we authorize ourselves to acces youtube
-    state:JSON.stringify({url:req.query.url,})
+    state:req.query.bundle
   });
   res.redirect(authUrl);  //redirect the guy to authorize
 });
 
 youtubeServer.get('/google', async (req, res) => {
   const { code } = req.query;
-
+  console.log(req.query);
   try {
     // Exchange the authorization code for tokens
     const { tokens } = await oauth2Client.getToken(code);
@@ -70,7 +79,7 @@ youtubeServer.get('/google', async (req, res) => {
     const refreshToken = tokens.refresh_token; // get the tokens's
     var auth=oauth2Client;
     auth.credentials=tokens;
-    console.log(tokens);
+   
     //we can use the refresh token to refresh our accesss however for a psychological perpective
     // i want the creator  to physically consent me to upload the video
 
@@ -99,10 +108,12 @@ youtubeServer.get('/google', async (req, res) => {
         await user.save();
       }
       const state=JSON.parse(req.query.state);
+      console.log(state);
       axios
       .get(`http://localhost:5000/upload`,{params:{
-        url:state.url,
-        userid:googleid
+        url:state.video.filePath,
+        userid:googleid,
+        thumbnailpath:state.thumbnail.filePath,
       }} )
       .then((response) => {
         // Handle the server's response here
@@ -129,7 +140,10 @@ youtubeServer.get('/google', async (req, res) => {
 
 //upload flow  react to app app send's user name and file to be uploaded  details then youtube acceses them
 youtubeServer.get('/upload',async (req,res)=>{
-  const videoFilePath=__dirname+'/files/'+req.query.url;
+  console.log(req.query);
+  const videoFilePath=req.query.url;
+  
+  console.log('query parameters in upload are')
   console.log(req.query);
     const user=await User.findOne({googleId:req.query.userid});
     if(user==null){
@@ -142,7 +156,7 @@ youtubeServer.get('/upload',async (req,res)=>{
 
     const tokens=user.Token;
     const accessToken = tokens.access_token;
-    const refreshToken = user.refresh_token; // get the tokens's
+    const refreshToken = tokens.refresh_token; // get the tokens's
     var auth=oauth2Client;
     auth.credentials=tokens;
 
@@ -170,14 +184,23 @@ youtubeServer.get('/upload',async (req,res)=>{
       media: {
         body: fs.createReadStream(videoFilePath), //this is file stream being piped to youtube
       },
-    }, function(err, response) {
+    }, async function(err, response) {
       if (err) {
         res.send('The API returned an error: ' + err);
         return;
       }
       console.log(response.data)
       // here you are supposed to handle thumbnail upload
-    
+      const videoId = response.data.id;
+      const thumbnailResponse = await service.thumbnails.set({
+        auth: auth,
+        videoId: videoId,
+        media: {
+          mimeType: 'image/png', // Adjust the MIME type if needed
+          body: fs.createReadStream(req.query.thumbnailpath), // This is the file stream being piped as the thumbnail
+        },
+      });
+      console.log('Thumbnail uploaded successfully:', thumbnailResponse.data);
       
     });
     }

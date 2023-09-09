@@ -1,5 +1,9 @@
 import  { useEffect, useState } from 'react';
 import axios from 'axios';
+const send=axios.create({
+  withCredentials:true //this ensure's that axio's is sending cookies along with the request
+
+})
 
 import Upload from './TusUpload'; // Import your upload component
 // videoOrdersUploaded should be recieved where in .order contain's all the information
@@ -8,7 +12,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
   const [currentTask, setCurrentTask] = useState(null);
   const [ycode,setYcode]=useState(0);
   useEffect(()=>{
-      axios.get('http://localhost:8000/createbundle').then((res)=>{
+      send.get('http://localhost:8000/createbundle').then((res)=>{
         console.log(res);
           setYcode(res.data);        
       })
@@ -24,7 +28,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
     setCurrentTask(null);
   };
   function handleFinish(){
-    axios.get('http://localhost:8000/finishbundle',{params:{code:ycode,
+    send.get('http://localhost:8000/finishbundle',{params:{code:ycode,
   id:currentTask.ownerid}}).then((res)=>{
     console.log(res.data);
     window.location.href='http://localhost:5173/editor';
