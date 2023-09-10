@@ -7,8 +7,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import PreviewIcon from '@mui/icons-material/Preview';
-
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
@@ -17,12 +16,24 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
-import { IconButton } from '@mui/material';
+import { Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 
 export default function TaskManager({ tasks, User }) {
   const [currentTask, setCurrentTask] = useState(null);
   const [currentThing, setCurrentThing] = useState(null);
 
+  function formatISODate(isoDateString) {
+    const date = new Date(isoDateString);
+  
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      
+    };
+  
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
   const handleTaskClick = (task,thing) => {
     setCurrentTask(task);
     setCurrentThing(thing);
@@ -121,6 +132,7 @@ export default function TaskManager({ tasks, User }) {
     case 'finalize':
         content=(
           <div>
+         
              <button onClick={handleBackClick}>Back to Previous Tasks</button>
              <Finalize User={User} task={currentTask}></Finalize>
           </div>
@@ -128,11 +140,41 @@ export default function TaskManager({ tasks, User }) {
     break;
     default:
       content = (
-        <div>
+        <div style={{marginTop:'5%',marginLeft:'1vw',marginRight:'1vw'}}>
+           <Grid container spacing={6}>
             
-        
-          
-            <TableContainer>
+                {tasks.map((task,index)=>{
+                    return (
+                        
+                        <Grid item xs={4} key={index} >
+                            <Card elevation={1} style={{padding:'2vw'}}>
+                                <CardHeader
+                                
+                                action={<DropdownMenu task={task} handleTaskClick={handleTaskClick}>
+
+                                </DropdownMenu>}
+                                title={'Suggested video tasks'}
+                                subheader={'task id is '+task.id}
+                                />
+                                <CardMedia
+                                    
+                                    component="video"
+                                    controls // Add this attribute to display video controls (play, pause, volume, etc.)
+                                    src={`http://localhost:3000/stream?id=${task.orignalVideo.fileName}`}
+                                    title="Your Video Title"
+                                />
+                                <CardContent>
+                                    
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    )
+                })}
+           
+            
+                
+                <Grid item xs={12}>
+                       <TableContainer>
                  <Table>
                  <TableHead>
                     <TableRow>
@@ -154,7 +196,7 @@ export default function TaskManager({ tasks, User }) {
                                   onMouseLeave={() => handleRowMouseLeave(index)}
                                 >
                                     <TableCell style={{width:'2vw',alignItems:'left'}}>{task.id}</TableCell>
-                                    <TableCell style={{width:'2vw',alignItems:'left'}}>{task.orignalVideo.creationDate}</TableCell>
+                                    <TableCell style={{width:'2vw',alignItems:'left'}}>{formatISODate(task.orignalVideo.creationDate)}</TableCell>
                                     <TableCell style={{width:'2vw',alignItems:'left'}}>{task.resources.length}</TableCell>
                                     <TableCell style={{width:'5vw',alignItems:'left'}}>
                                     <div className={`row-buttons-${index}`} style={{ display: 'none' }}>
@@ -183,6 +225,11 @@ export default function TaskManager({ tasks, User }) {
                     
                 </Table>
             </TableContainer>
+                </Grid>
+            </Grid> 
+        
+ 
+         
           
         </div>
       );
@@ -191,3 +238,64 @@ export default function TaskManager({ tasks, User }) {
   return <div>{content}</div>;
 }
 
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
+function DropdownMenu({task,handleTaskClick}) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <IconButton
+        aria-controls="dropdown-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+       <MoreVertIcon></MoreVertIcon>
+      </IconButton>
+      <Menu
+        id="dropdown-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+           <ListItemIcon>
+                <IconButton onClick={()=>{handleTaskClick(task,'finalize')}}>
+                        <YouTubeIcon>
+                          
+                        </YouTubeIcon>
+                </IconButton>
+           </ListItemIcon>
+           <ListItemText>
+                 Upload
+           </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClose} >
+            <ListItemIcon>
+                <IconButton onClick={()=>{handleTaskClick(task,'hire')}}>
+                    <PreviewIcon>
+                        
+                    </PreviewIcon>
+                </IconButton>
+            </ListItemIcon>
+           <ListItemText>
+                Preview  
+           </ListItemText>
+            
+           
+        </MenuItem>
+        
+      </Menu>
+    </div>
+  );
+}

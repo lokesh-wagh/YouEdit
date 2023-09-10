@@ -26,7 +26,7 @@ export default function CreateTask({ User }) {
         code:taskCode,
         id:User.googleId,
       }}).then(()=>{
-        window.location.href='http://localhost:5173/creator';
+        window.location.href='http://localhost:5173/creator/previous-task';
       })
     } 
     useEffect(()=>{

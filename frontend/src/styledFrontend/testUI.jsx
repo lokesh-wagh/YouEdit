@@ -231,7 +231,7 @@ function Layout({ children}) {
       </Drawer>
 
       {/* main content */}
-      <div className='guySittingonPage' style={{ background: '#ffffff', width: '83%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-4+'vh',borderRadius:'1vh'}}>
+      <div className='guySittingonPage' style={{ background: '#ffffff', width: '83%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-4+'vh',borderRadius:'1vh',overflowY:'scroll', scrollBehavior:'smooth',scrollbarWidth:'thin'}}>
         <div className='canvasGuy' style={{ height: `calc(100%-${appbarHeight}vh`,width:'100%' }}>
           {children}
         </div>
