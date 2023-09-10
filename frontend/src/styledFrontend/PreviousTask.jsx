@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { AddAPhotoOutlined, ImportContacts } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { AddAPhotoOutlined, DeleteOutline, ImportContacts, TableView } from '@mui/icons-material';
 import Finalize from './Finalize';
 import Hire from './Hire';
 import DownloadIcon from '@mui/icons-material/Download';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import PreviewIcon from '@mui/icons-material/Preview';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';  
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -19,9 +23,9 @@ import TableCell from '@mui/material/TableCell';
 import { Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 
 export default function TaskManager({ tasks, User }) {
-  const [currentTask, setCurrentTask] = useState(null);
+  const [currentTask, setCurrentTask] = useState(null);//temporary fix
   const [currentThing, setCurrentThing] = useState(null);
-
+  
   function formatISODate(isoDateString) {
     const date = new Date(isoDateString);
   
@@ -83,7 +87,26 @@ export default function TaskManager({ tasks, User }) {
       button.style.display = 'block';
     }
   };
+  function properIconSelector(type){
+    switch(type){
+      case "application":
+        return(
+       
+            <PictureAsPdfIcon>
 
+            </PictureAsPdfIcon>
+          
+        )
+        case "image":
+          return (
+            <InsertPhotoIcon></InsertPhotoIcon>
+          )
+        case "video":
+          return (<SlideshowIcon></SlideshowIcon>)
+        default :
+        return (<AddAPhotoOutlined></AddAPhotoOutlined>)
+    }
+  }
   
   const handleRowMouseLeave = (index) => {
     const buttons = document.getElementsByClassName(`row-buttons-${index}`);
@@ -96,35 +119,91 @@ export default function TaskManager({ tasks, User }) {
   switch (currentThing) {
     case 'edit':
       content = (
-        <div>
-          <h1>Task Manager</h1>
-          <div>
-            <button onClick={handleBackClick}>Back to Previous Tasks</button>
-            <h2>Task Configuration</h2>
-            <video controls width="400">
-              <source src={`http://localhost:3000/stream?id=${currentTask.orignalVideo.fileName}`} type={currentTask.orignalVideo.mimeType} />
-              Your browser does not support the video tag.
-            </video>
-            <div>
-              <h2>Resources</h2>
-              {currentTask.resources.map((resource, index) => (
-                <div key={index}>
-                  <p>Resource {index + 1}</p>
-                  <button onClick={() => handleDeleteResource(resource.media.fileName, User.googleId, currentTask.id)}>Delete</button>
-                </div>
-              ))}
-            </div>
-            <button onClick={handleDownloadVideo}>Download Video</button>
-            <button onClick={handleDownloadResources}>Download Resources</button>
-          </div>
-        </div>
+      
+          <Grid container style={{paddingTop:'2%'}}>
+            <Grid item xs={3.5}></Grid>
+            <Grid item xs={5} >
+            <Card elevation={1}>
+            <CardHeader
+              action={<DropdownMenu2 task={currentTask} handleDownloadResources={handleDownloadResources} handleDownloadVideo={handleDownloadVideo}></DropdownMenu2>}
+              title={'Previewing a Video'}
+              subheader={'video id is '+currentTask.id}
+              avatar={<IconButton onClick={handleBackClick}>
+                <ArrowBackIcon></ArrowBackIcon>
+              </IconButton>}
+            >
+
+            </CardHeader>
+            <CardMedia
+                                    
+              component="video"
+              controls // Add this attribute to display video controls (play, pause, volume, etc.)
+              src={`http://localhost:3000/stream?id=${currentTask.orignalVideo.fileName}`}
+              title="Your Video Title"
+            />
+            <CardContent>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          type
+                        </TableCell>
+                        <TableCell>
+                          resource id
+                        </TableCell>
+                        <TableCell>
+                          action
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                  <TableBody>
+                    {
+                    currentTask!=null?
+                      currentTask.resources.map((resource,index)=>{
+                        return(
+                        <TableRow key={index}>
+                          <TableCell>
+                            <IconButton>
+                            {
+                             properIconSelector(resource.media.mimeType.split('/')[0])
+                            }
+                            </IconButton>
+                            
+                          </TableCell>
+                          <TableCell>
+                              {resource.media.fileName}
+                          </TableCell>
+                          <TableCell>
+                            <IconButton onClick={() => handleDeleteResource(resource.media.fileName, User.googleId, currentTask.id)}>
+                              <DeleteIcon></DeleteIcon>
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      )}):<></>
+                          }
+                      
+                    
+                  
+                   
+                  </TableBody>
+
+                  </Table>
+                </TableContainer>
+            </CardContent>
+          </Card>
+            </Grid>
+          </Grid>
+          
+        
+        
       );
       break;
     case 'hire':
       content = (
         <div>
           <button onClick={handleBackClick}>Back to Previous Tasks</button>
-          hire
+          <button>hire</button>
           <Hire User={User} task={currentTask} />
         </div>
       );
@@ -143,7 +222,7 @@ export default function TaskManager({ tasks, User }) {
         <div style={{marginTop:'5%',marginLeft:'1vw',marginRight:'1vw'}}>
            <Grid container spacing={6}>
             
-                {tasks.map((task,index)=>{
+                {tasks.slice(0,3).map((task,index)=>{
                     return (
                         
                         <Grid item xs={4} key={index} >
@@ -164,7 +243,7 @@ export default function TaskManager({ tasks, User }) {
                                     title="Your Video Title"
                                 />
                                 <CardContent>
-                                    
+                                    Click on the three dot
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -276,20 +355,78 @@ function DropdownMenu({task,handleTaskClick}) {
                         </YouTubeIcon>
                 </IconButton>
            </ListItemIcon>
-           <ListItemText>
+           <ListItemText onClick={()=>{handleTaskClick(task,'finalize')}}>
                  Upload
            </ListItemText>
         </MenuItem>
         <MenuItem onClick={handleClose} >
             <ListItemIcon>
                 <IconButton onClick={()=>{handleTaskClick(task,'hire')}}>
-                    <PreviewIcon>
+                    <AddAPhotoOutlined>
                         
-                    </PreviewIcon>
+                    </AddAPhotoOutlined>
                 </IconButton>
             </ListItemIcon>
-           <ListItemText>
-                Preview  
+           <ListItemText onClick={()=>{handleTaskClick(task,'hire')}}>
+               Hire Editor 
+           </ListItemText>
+            
+           
+        </MenuItem>
+        
+      </Menu>
+    </div>
+  );
+}
+
+function DropdownMenu2({task,handleDownloadVideo,handleDownloadResources}) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <IconButton
+        aria-controls="dropdown-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+       <MoreVertIcon></MoreVertIcon>
+      </IconButton>
+      <Menu
+        id="dropdown-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+           <ListItemIcon>
+                <IconButton onClick={()=>{handleDownloadResources(task)}}>
+                        <DownloadIcon>
+
+                        </DownloadIcon>
+                </IconButton>
+           </ListItemIcon>
+           <ListItemText onClick={()=>{handleDownloadResources(task)}}>
+                Download Resources
+           </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClose} >
+            <ListItemIcon>
+                <IconButton onClick={()=>{handleDownloadVideo(task)}}>
+                   <WebAssetIcon></WebAssetIcon>
+
+                </IconButton>
+            </ListItemIcon>
+           <ListItemText onClick={()=>{handleDownloadVideo(task)}}>
+                Download Video 
            </ListItemText>
             
            
