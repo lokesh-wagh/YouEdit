@@ -120,10 +120,10 @@ export default function TaskManager({ tasks, User }) {
     case 'edit':
       content = (
       
-          <Grid container style={{paddingTop:'2%'}}>
+          <Grid container style={{paddingTop:'2%' ,maxHeight:"40%"}}>
             <Grid item xs={3.5}></Grid>
             <Grid item xs={5} >
-            <Card elevation={1}>
+            <Card elevation={1} style={{maxHeight:"80vh",overflowY:"auto"}} >
             <CardHeader
               action={<DropdownMenu2 task={currentTask} handleDownloadResources={handleDownloadResources} handleDownloadVideo={handleDownloadVideo}></DropdownMenu2>}
               title={'Previewing a Video'}
