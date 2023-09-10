@@ -7,10 +7,11 @@ import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { IconButton } from '@mui/material';
-import {Button} from '@mui/material';
+
 import { useTheme} from '@mui/material/styles';
 import {Card,CardContent,CardHeader} from '@mui/material'
 import {Grid} from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export default function CreateTask({ User }) {
     const [taskCode,setTaskCode]=useState(null); 
@@ -35,7 +36,7 @@ export default function CreateTask({ User }) {
       })
     },[]) 
     return (
-        <div style={{marginTop:'25vh',marginLeft:'10vw'}}>
+        <div style={{marginTop:'15%',marginLeft:'25%'}}>
    <Grid container spacing={4}>
     <Grid item xs={12} md={6} lg={4}>
     <Card elevation={1}>
@@ -63,9 +64,14 @@ export default function CreateTask({ User }) {
         </CardContent>
       </Card>
     </Grid>
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12}>
+       
          
-      <Button onClick={handleSubmit}>Finish creating</Button>
+      
+         
+      <IconButton onClick={handleSubmit} style={{position:'absolute',bottom:'10vh',right:'5vw'}} >
+        <AddCircleIcon style={{fontSize:'100px'}}></AddCircleIcon>
+      </IconButton>
     </Grid>
   
    
@@ -76,6 +82,7 @@ export default function CreateTask({ User }) {
 
 
 import * as tus from 'tus-js-client'
+
  // upload component has no known bug's
  /*
   this component solely handles the upload to the website
@@ -185,3 +192,5 @@ import * as tus from 'tus-js-client'
     </Container>
   );
 }
+
+
