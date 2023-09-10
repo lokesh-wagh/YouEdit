@@ -55,7 +55,9 @@ function App() {
             LOADER MOST PROBABLY BACKEND IS DOWN
         </div>)
     }
-    return (authenticated==true?<><Routes>
+    return (authenticated==true?<>
+        {/* here we will have the navbar and a side bar and button's to call the route's shown below */}
+        <Routes>
             <Route path='/' element={<LandingPage/>}></Route>
             <Route path='/creator' element={<CreatorDashboard user={user}/>}></Route>
            
