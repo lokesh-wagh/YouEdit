@@ -1,7 +1,6 @@
 
 export default function Finalize({User,task}){
-    
-    console.log(task);
+
     
   function handleDownloadVideo(bundle) {
     window.location.href = `http://localhost:3000/download?id=${bundle.video.fileName}`;

@@ -14,7 +14,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
 import Auth from '../Auth';
-import PreviousTask from '../PreviousTask';
+import PreviousTask from './PreviousTask';
 import CreatorDashboard from '../CreatorDashboard';
 import LandingPage from '../LandingPage';
 import CreateTask from './CreateTask';
@@ -32,7 +32,8 @@ const send = axios.create({
 function App() {
   const [user, setUser] = useState(null);
   const [authenticated, setAuthenticated] = useState(null);
- 
+  
+  console.log(user);
   
 
   useEffect(() => {
