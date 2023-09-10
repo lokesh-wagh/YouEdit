@@ -101,7 +101,7 @@ function App() {
 }
 
 const drawerWidth = 300;
-const appbarHeight=10;
+const appbarHeight=7;
 const menuItemsCreator = [
   {
     text: 'See Previous Editing',
@@ -164,11 +164,11 @@ function Layout({ children}) {
 
   return (
     <ThemeProvider theme={theme}>
-    <div style={{ display: 'flex'}}>
+    <div style={{ display: 'flex',background:'#f1f3f4'}}>
       {/* app bar */}
       <AppBar
         position="fixed"
-        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth }}
+        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth,background:'#f1f3f4'}}
         elevation={0}
      
       >
@@ -192,11 +192,13 @@ function Layout({ children}) {
 
       {/* side drawer */}
       <Drawer
+        
         style={{ width: drawerWidth }}
         variant="permanent"
+        
         PaperProps={{sx:{
           width:drawerWidth,
-          
+          border:'none',  
         }}}
         anchor="left"
       >
@@ -228,7 +230,7 @@ function Layout({ children}) {
       </Drawer>
 
       {/* main content */}
-      <div className='guySittingonPage' style={{ background: '#f9f9f9', width: '100%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-4+'vh' }}>
+      <div className='guySittingonPage' style={{ background: '#ffffff', width: '83%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-4+'vh',borderRadius:'1vh'}}>
         <div className='canvasGuy' style={{ height: `calc(100%-${appbarHeight}vh`,width:'100%' }}>
           {children}
         </div>
