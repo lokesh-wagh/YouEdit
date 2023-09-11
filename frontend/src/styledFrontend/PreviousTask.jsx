@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
+import './Scrollbar.css'
 import { AddAPhotoOutlined, DeleteOutline, ImportContacts, TableView } from '@mui/icons-material';
 import Finalize from './Finalize';
 import Hire from './Hire';
@@ -123,7 +124,7 @@ export default function TaskManager({ tasks, User }) {
           <Grid container style={{paddingTop:'2%' ,maxHeight:"40%"}}>
             <Grid item xs={3.5}></Grid>
             <Grid item xs={5} >
-            <Card elevation={1} style={{maxHeight:"80vh",overflowY:"auto"}} >
+            <Card elevation={1} style={{maxHeight:"80vh",overflowY:"auto"}} className='previewCard'>
             <CardHeader
               action={<DropdownMenu2 task={currentTask} handleDownloadResources={handleDownloadResources} handleDownloadVideo={handleDownloadVideo}></DropdownMenu2>}
               title={'Previewing a Video'}
@@ -202,8 +203,7 @@ export default function TaskManager({ tasks, User }) {
     case 'hire':
       content = (
         <div>
-          <button onClick={handleBackClick}>Back to Previous Tasks</button>
-          <button>hire</button>
+          
           <Hire User={User} task={currentTask} />
         </div>
       );

@@ -91,6 +91,19 @@ const mediaSchema=new mongoose.Schema({//this schema is internally used to get r
     status:String,
 
 })
+const EditorProfile=new mongoose.Schema(
+    {
+        googleId:String,
+        profileURL:String,
+        rating:String,
+        worksAssigned:String,
+        worksCompleted:String,
+        description:String,
+        skills:[String],
+        qualifications:[String],
+        rates:[{rate:String,description:String,level:String}],
+    }   
+)
 const finalUserSchema=new mongoose.Schema({
     username:String,
     googleId:String,
@@ -98,11 +111,16 @@ const finalUserSchema=new mongoose.Schema({
     email:String,
     role:String,
     profilePic:String,//
+    profileURL:String,
+    registeredAsEditor:Boolean,
+    editorProfile:EditorProfile,
     Token:Object,
     tasks:[videoTaskSchema],//given by the user to editors
     videoOrdersUploaded:[youtubeBundleSchema],//editor uploaded will be here
     videoOrdersAssigned:[{order:videoTaskSchema,ownerid:String}],//editor's would see from these order's
 })
+
+
 
 
 
@@ -113,6 +131,6 @@ module.exports = {
     youtubeBundleSchema,
     videoTaskSchema,
     finalUserSchema,
- 
+    EditorProfile,
     
   };

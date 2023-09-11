@@ -1,7 +1,12 @@
+/*
+  1. use ToolTip on all the icon's so the user know's the UI well
+
+*/
+
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-
+import './Scrollbar.css'
 import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -13,12 +18,12 @@ import { AddCircleOutlineOutlined, SubjectOutlined } from '@mui/icons-material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
-import Auth from '../Auth';
+import Auth from './Auth';
 import PreviousTask from './PreviousTask';
 import CreatorDashboard from '../CreatorDashboard';
-import LandingPage from '../LandingPage';
+import LandingPage from './LandingPage';
 import CreateTask from './CreateTask';
-import EditorDashboard from '../Editordashboard';
+import TaskManagerAndCreateBundle from './EditorDashboard';
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EmergencyRecordingRoundedIcon from '@mui/icons-material/EmergencyRecordingRounded';
@@ -90,14 +95,17 @@ function App() {
             <Route path='/creator' element={<CreatorDashboard user={user} />} />
             <Route path='/creator/create-task' element={<CreateTask User={user || { googleId: '11231231' }} />} />
             <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user || { googleId: '11231231' }} tasks={(user && user.tasks) || {}} />} />
-            <Route path='/editor' element={<EditorDashboard User={user || { googleId: '11231231' }} orders={(user && user.videoOrdersAssigned) || {}} />} />
+            <Route path='/editor' element={<TaskManagerAndCreateBundle User={user || { googleId: '11231231' }} orders={(user && user.videoOrdersAssigned) || {}} />} />
           
         </Routes>
       </Layout>
       
     </>
   ) : (
-    <Auth />
+    <Layout>
+       <Auth />
+    </Layout>
+   
   );
 }
 
@@ -221,17 +229,23 @@ function Layout({ children}) {
                 history(item.path)}}
               sx={{
                 backgroundColor: selectedItem === index ? '#D3E3FD' : 'transparent', // Change background color for selected item
+                borderRadius:'10px',
+                width:'80%',
+                
+                marginLeft:'10%',
+                marginTop:"2%",
+                marginBottom:'2%',  
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText primary={item.text}/>
             </ListItem>
           ))}
         </List>
       </Drawer>
 
       {/* main content */}
-      <div className='guySittingonPage' style={{ background: '#ffffff', width: '83%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-4+'vh',borderRadius:'1vh',overflowY:'scroll', scrollBehavior:'smooth',scrollbarWidth:'thin'}}>
+      <div className='guySittingonPage' style={{ background: '#ffffff', width: '80%', marginTop: appbarHeight+2+'vh',height:100-appbarHeight-6+'vh',borderRadius:'1vh',overflowY:'auto', scrollBehavior:'smooth',scrollbarWidth:'thin'}}>
         <div className='canvasGuy' style={{ height: `calc(100%-${appbarHeight}vh`,width:'100%' }}>
           {children}
         </div>

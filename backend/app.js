@@ -58,11 +58,12 @@ const express=require('express');
 const app=express();
 const mongoose=require('mongoose');
 const axios=require('axios');
-;
+
 
 const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
 const YoutubeBundle=mongoose.model('Bundle',require('./schema.js').youtubeBundleSchema);
+const EditorProfile=mongoose.model('Editors',require('./schema').EditorProfile);
 
 const cors=require('cors')
 app.use(cors());
@@ -90,14 +91,19 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },async(accesstoken,refreshtoken,profile,done)=>{
         //these accesstoken and refreshtoken cannot be used by us so that's a problem
-        
+        console.log(profile);
         var user=await User.findOne({googleId:profile.id});
     
         if(user==null){
-          await User.create({googleId:profile.id,username:profile.displayName,email:profile.emails[0].value}); 
+          await User.create({googleId:profile.id,username:profile.displayName,email:profile.emails[0].value,profileURL:profile.photos[0].value}); 
         }
         user=await User.findOne({googleId:profile.id});
-      return done(null,user);
+        user.profileURL=profile.photos[0].value;
+        if(user.registeredAsEditor==null){
+          user.registeredAsEditor=false;
+        }
+        await user.save();
+        return done(null,user);
    
   }));
   
@@ -150,7 +156,7 @@ passport.use(new GoogleStrategy({
 
 
 
-  app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
+  app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login',scope:['profile','email']}))
  
   app.get('/auth/status',(req,res)=>{
     
@@ -171,7 +177,38 @@ passport.use(new GoogleStrategy({
         res.redirect('/google')
     }
   })
-
+/*
+const EditorProfile=new mongoose.Schema(
+    {
+        googleId:String,
+        rating:String,
+        worksAssigned:String,
+        worksCompleted:String,
+        description:String,
+        skills:[String],
+        qualifications:[String],
+        rates:[{work:String,rate:String,level:String}],
+    }   
+)
+*/
+  app.get('/registerEditor',async(req,res)=>{
+    const user=await User.findOne({googleId:req.query.googleId});
+    const profile=await EditorProfile.create({
+      googleId:user.googleId,
+      rating:'3',
+      rates:req.query.rates,
+      qualifications:req.query.qualification,
+      description:req.query.descriptionEditor,
+      worksAssigned:'0',
+      worksCompleted:'0',
+      skills:req.query.skills,
+      profileURL:user.profileURL,
+      username:user.username,
+    })
+    user.editorProfile=profile;
+    user.registeredAsEditor=true;
+    await user.save();
+  })
   app.get('/user',(req,res)=>{
     
     if(!req.isAuthenticated()){
@@ -253,9 +290,14 @@ app.get('/finishbundle',async(req,res)=>{
 app.get('/hireList',async (req,res)=>{
   try {///here implement search engine logic
    
-    const firstThreeUsers = await User.find().limit(3);
-
-    res.send(firstThreeUsers);
+    const firstThreeUsers = await User.find().limit(6);
+    const responseObject = await Promise.all(firstThreeUsers.map(async (user) => {
+      const obj = await EditorProfile.findOne({ googleId: user.googleId });
+      console.log(obj);
+      return obj;
+    }));
+    console.log(responseObject);
+    res.send(responseObject);
   } catch (error) {
     console.error('Error fetching first three users:', error);
     throw error; 

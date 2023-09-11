@@ -5,9 +5,9 @@ import {Route,Routes} from 'react-router-dom';
 import Auth from './Auth'
 import PreviousTask from './PreviousTask'
 import CreatorDashboard from './CreatorDashboard'
-import LandingPage from './LandingPage'
+import LandingPage from './styledFrontend/LandingPage'
 import CreateTask from './CreateTask';
-import EditorDashboard from './Editordashboard'
+import EditorDashboard from './styledFrontend/EditorDashboard'
 
 const send=axios.create({
     withCredentials:true //this ensure's that axio's is sending cookies along with the request
