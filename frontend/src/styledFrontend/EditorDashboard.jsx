@@ -141,14 +141,7 @@ function handleDownloadResources(orderId) {
           </div>
         ) : (
           
-          // <div>
-          //   <button onClick={handleBackToNormalView}>Back to Normal View</button>
-          //   <h2>Upload View for Order {currentTask.order.id}</h2>
-          //   {/* Render the UploadComponent with the currentTask */}
-          //   <Upload User={User} code={currentTask.order.id} role={'editedVideo'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
-          //   <Upload User={User} code={currentTask.order.id} role={'editedThumbnail'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
-          //   <button onClick={handleFinish}>finish editing upload</button>
-          // </div>
+         
           <div style={{marginTop:'15%',marginLeft:'25%'}}>
           <Grid container spacing={4}>
            <Grid item xs={12} md={6} lg={4}>

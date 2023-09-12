@@ -32,7 +32,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EmergencyRecordingRoundedIcon from '@mui/icons-material/EmergencyRecordingRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import { IconButton } from '@mui/material';
+import { Alert, Button, ButtonGroup, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, Icon, IconButton, Snackbar, TextField, Tooltip } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
@@ -41,9 +44,8 @@ const send = axios.create({
 function App() {
   const [user, setUser] = useState(null);
   const [authenticated, setAuthenticated] = useState(null);
-  
-  console.log(user);
-  
+  const [profileOpen,setProfileOpen]=useState(false);
+
 
   useEffect(() => {
     send.get('http://localhost:8000/auth/status')
@@ -97,7 +99,20 @@ function App() {
     <>
       {/* here we will have the navbar and a side bar and buttons to call the routes shown below */}
      
-      <Layout handleLogout={handleLogout}>
+      <Layout handleLogout={handleLogout} user={user} setProfileOpen={setProfileOpen}>
+          <Dialog onClose={()=>{
+            setProfileOpen(false);
+          }}
+          open={profileOpen}
+          maxWidth="xs"
+          fullWidth
+          >
+            <DialogContent>
+              <ProfileToast user={user} handleLogout={handleLogout} setProfileOpen={setProfileOpen} setUser={setUser}>
+
+              </ProfileToast>
+            </DialogContent>
+          </Dialog>
         <Routes>
        
             <Route path='/' element={<LandingPage />} />
@@ -141,16 +156,12 @@ const menuItems = [
 ]
 
 
-function Layout({ children,handleLogout}) {
+function Layout({ children,handleLogout,user,setProfileOpen}) {
   const [selectedItem,setSelectedItem]=useState(null);
 
   const history = useNavigate();
   const location = useLocation();
-  // const menuItems=menuItemsCreator;
-  // function setMenuItems()
-  // {
-
-  // }
+  
   const theme = createTheme({
     palette: {
       primary: {
@@ -194,23 +205,13 @@ function Layout({ children,handleLogout}) {
           <Typography style={{ flexGrow: 1 }}>
             Today is the Lauden bhujyam day
           </Typography>
+          
           <IconButton onClick={()=>{
-            setSelectedItem(0);
-            }}>
-            <EditRoundedIcon fontSize='large'></EditRoundedIcon>
-          </IconButton>
-          <IconButton onClick={()=>{
-            setSelectedItem(0);
-         }}>
-            <EmergencyRecordingRoundedIcon fontSize='large'></EmergencyRecordingRoundedIcon>
-          </IconButton>
-          <IconButton onClick={()=>{
-            handleLogout();
+            setProfileOpen(true);
           }}>
-            <LogoutIcon fontSize='large'>
-
-            </LogoutIcon>
+              <Avatar src={user&&user.profileURL} style={{height:'6vh',width:'6vh'}}></Avatar>
           </IconButton>
+          
         </Toolbar>
       </AppBar>
 
@@ -270,6 +271,356 @@ function Layout({ children,handleLogout}) {
   );
 }
 
+function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
+  const [editOpen,setEditOpen]=useState(false);  
+  return(
+           <>
+           
+                  <Dialog
+                    open={editOpen}
+                    onClose={()=>{
+                      setEditOpen(false);
+                      
+                    }}
+                    fullWidth
+                    maxWidth='xs'
+                  >
+                    <DialogContent>
+                        <EditorRegister User={user} setUser={setUser}></EditorRegister>
+                    </DialogContent>
+                  </Dialog>
+              
+                   <Card style={{padding:'1%'}}>
+                          
+                        <CardHeader
+                        avatar={
+                          <IconButton onClick={()=>{
+                            setProfileOpen(false);
+                          }}>
+                            <ArrowBackIcon></ArrowBackIcon>
+                          </IconButton>
+                        }
+                        action={
+                        <>
+                        
+                        <Tooltip title="logout??" arrow>
+                             <IconButton onClick={()=>{
+                          handleLogout();
+                        }}>
+                          <LogoutIcon></LogoutIcon>
+                        </IconButton>
+                        </Tooltip>
+                        <IconButton onClick={()=>{
+                          setEditOpen(true);
+                        }}>
+                          <EditRoundedIcon>
 
+                          </EditRoundedIcon>
+                        </IconButton>
+                        </>
+                       }/>
+                        <Avatar src={user.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto'}}>
+
+                        </Avatar>
+                        <Divider></Divider>
+                      
+                          <CardContent>
+                            <Grid container >
+                              <Grid item xs={5}></Grid>
+                              <Grid item >
+                              <StarIcon style={{color:'gold'}}>
+
+                              </StarIcon> 
+                              </Grid>
+                              <Grid item >
+                                  {user.editorProfile.rating}.0
+                              </Grid>
+                            </Grid>
+                           
+                          
+                           
+                             
+                              <Container  style={{marginTop:'2vh',marginBottom:'2vh', textAlign:'center'}} >
+                                <Typography>{user.username}</Typography>
+                                <Typography variant="body2" color="textSecondary" component="p">
+                                {user.editorProfile.description}
+                                </Typography>
+                              </Container>
+                             
+                              
+                              <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
+                              
+                              
+                              {user.editorProfile.skills.map((skill,index)=>{
+                                      return(
+                                          <CapsuleIconButton
+                                          key={index}
+                                          text={skill}
+                                          ></CapsuleIconButton>
+                                      )
+                                  })}
+                              </ButtonGroup>
+                                  
+                      
+                              
+                              <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
+
+
+                              {
+                              user.editorProfile.qualifications.map((skill,index)=>{
+                                      return(
+                                          <CapsuleIconButton
+                                          key={index}
+                                          text={skill}
+                                          ></CapsuleIconButton>
+                                      )
+                                  })
+                              }         
+                              </ButtonGroup>
+
+                              
+                              <ButtonGroup style={{marginTop:'3vh',marginBottom:'1vh'}}>
+
+
+                              </ButtonGroup>
+
+
+                      
+                          </CardContent>
+                      </Card>    
+                
+                </>
+    )
+}
+
+function EditorRegister({User,setUser}){
+  const [open, setOpen] = useState(true);
+  const [formData, setFormData] = useState({
+    description: User.editorProfile.description,
+    skills:'',
+    qualification:'',
+    rates:'',
+    level:'',
+    descriptionRate:'',
+  });
+  const [skillsList, setSkillsList] = useState(User.editorProfile.skills);
+  const [qualificationList,setQualificationList]=useState(User.editorProfile.qualifications);
+  const [rateList,setRateList]=useState(User.editorProfile.rates);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAddSkill = (e) => {
+    if (e.key === 'Enter' && formData.skills.trim() !== '') {
+      setSkillsList((prevSkillsList) => [...prevSkillsList, formData.skills]);
+      setFormData({ ...formData, skills: '' });
+    }
+  };
+  const handleAddRate = (e) => {
+    if (e.key === 'Enter' && formData.rates.trim() !== '') {
+      setRateList((prevSkillsList) => [...prevSkillsList, {rate:formData.rates,level:formData.level,description:formData.descriptionRate}]);
+      setFormData({ ...formData, rates: '',descriptionRate:'',level:''});
+    }
+  };
+  function handleSkillDelete(id){
+    setSkillsList(skillsList.filter((skill,index)=>{
+      return id!=index;
+    }))
+  }
+  function handleQualificationDelete(id){
+    setQualificationList(qualificationList.filter((skill,index)=>{
+      return id!=index;
+    }))
+  }
+  function handleRateDelete(id){
+    setRateList(rateList.filter((skill,index)=>{
+      return id!=index;
+    }))
+  }
+  const handleAddQualification = (e) => {
+    if (e.key === 'Enter' && formData.qualification.trim() !== '') {
+      setQualificationList((prevSkillsList) => [...prevSkillsList, formData.qualification]);
+      setFormData({ ...formData, qualification: '' });
+    }
+  };
+
+  const handleFormSubmit = () => {
+  
+    axios.get('http://localhost:8000/registerEditor',{
+      params:{
+        skills:skillsList,
+        descriptionEditor:formData.description,
+        rates:rateList,
+        qualification:qualificationList,
+        googleId:User.googleId,
+      }
+    })
+    // Close the dialog
+    setUser({...User,editorProfile:{skills:skillsList,
+      description:formData.description,
+      rates:rateList,
+      qualifications:qualificationList}});
+    setOpen(false);
+  };
+
+  return (
+    <div>
+        <Snackbar
+          key={0}
+          open={open}
+          autoHideDuration={6000}
+          onClose={()=>{}}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert severity={'info'}>
+            {"This Info will be Displayed to Creator's along with your profile data"}
+          </Alert>
+        </Snackbar>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogContent>
+          <Card>
+            <CardContent>
+            <TextField
+                autoFocus
+                margin="dense"
+                name="description"
+                label="Description of Yourself"
+                type="text"
+                fullWidth
+                value={formData.description}
+                onChange={handleInputChange}
+               
+              />
+            
+            <ButtonGroup style={{flexWrap:'wrap'}}>
+                {rateList.map((skill, index) => (
+                 <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={`${skill.level}:${skill.description}-${skill.rate}`} onClick={()=>{handleRateDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
+                ))}
+             </ButtonGroup>
+             
+               <TextField
+                autoFocus
+                margin="dense"
+                name="level"
+                label="Level"
+                type="text"
+                fullWidth
+                value={formData.level}
+                onChange={handleInputChange}
+                onKeyDown={handleAddRate}
+              />
+               <TextField
+                autoFocus
+                margin="dense"
+                name="descriptionRate"
+                label="what would you do"
+                type="text"
+                fullWidth
+                value={formData.descriptionRate}
+                onChange={handleInputChange}
+                onKeyDown={handleAddRate}
+              />
+               <TextField
+                autoFocus
+                margin="dense"
+                name="rates"
+                label="Rates"
+                type="text"
+                fullWidth
+                value={formData.rates}
+                onChange={handleInputChange}
+                onKeyDown={handleAddRate}
+              />
+            
+              <ButtonGroup style={{flexWrap:'wrap'}}>
+                {qualificationList.map((skill, index) => (
+                  <CapsuleIconButton key={index} icon={<CancelIcon></CancelIcon>}  text={skill} onClick={()=>{handleQualificationDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
+                ))}
+             </ButtonGroup>
+         
+               
+               <TextField
+                autoFocus
+                margin="dense"
+                name="qualification"
+                label="Qualification"
+                type="text"
+                fullWidth
+                value={formData.qualification}
+                onChange={handleInputChange}
+                onKeyDown={handleAddQualification}
+              />
+             <ButtonGroup style={{flexWrap:'wrap'}}>
+                {skillsList.map((skill, index) => (
+                   <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={skill} onClick={()=>{handleSkillDelete(index)}}></CapsuleIconButton> //put capsule button's instead of icon
+                ))}
+           </ButtonGroup>
+               <TextField
+                autoFocus
+                margin="dense"
+                name="skills"
+                label="Skills"
+                type="text"
+                fullWidth
+                value={formData.skills}
+                onChange={handleInputChange}
+                onKeyDown={handleAddSkill}
+              />
+             
+            </CardContent>
+          </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleFormSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
+function CapsuleIconButton({ text,onClick}) {
+  const capsuleButtonStyle = { 
+    
+    borderRadius: '999px', // Makes the button shape like a capsule
+    padding: '7px 14px', // Adjust padding as needed
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin:'2px',
+    height:'8%',
+      backgroundColor:'#ffffff'
+  };
+
+  const typographyStyle = {
+    marginLeft: '8px',
+    fontSize:'14px'
+  };
+
+  return (
+    <IconButton style={capsuleButtonStyle} onClick={(e)=>{
+      if(onClick!=null){
+          onClick(e);
+      }
+    }}>
+     
+      <Typography variant="body1" style={typographyStyle}>
+        {text}
+      </Typography>
+    </IconButton>
+  );
+}
+  
 
 export default App;

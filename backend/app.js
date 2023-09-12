@@ -190,18 +190,29 @@ passport.use(new GoogleStrategy({
 
   app.get('/registerEditor',async(req,res)=>{
     const user=await User.findOne({googleId:req.query.googleId});
-    const profile=await EditorProfile.create({
-      googleId:user.googleId,
-      rating:'3',
-      rates:req.query.rates,
-      qualifications:req.query.qualification,
-      description:req.query.descriptionEditor,
-      worksAssigned:'0',
-      worksCompleted:'0',
-      skills:req.query.skills,
-      profileURL:user.profileURL,
-      username:user.username,
-    })
+    var profile=await EditorProfile.findOne({googleId:user.googleId});
+    if(profile==null){
+      profile=await EditorProfile.create({
+        googleId:user.googleId,
+        rating:'3',
+        rates:req.query.rates,
+        qualifications:req.query.qualification,
+        description:req.query.descriptionEditor,
+        worksAssigned:'0',
+        worksCompleted:'0',
+        skills:req.query.skills,
+        profileURL:user.profileURL,
+        username:user.username,
+      })
+    }
+    else{
+      profile.rates=req.query.rates
+      profile.qualifications=req.query.qualification
+      profile.description=req.query.descriptionEditor
+      profile.skills=req.query.skills
+      await profile.save();
+    }
+    
     user.editorProfile=profile;
     user.registeredAsEditor=true;
     await user.save();
