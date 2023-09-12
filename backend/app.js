@@ -154,7 +154,16 @@ passport.use(new GoogleStrategy({
 
   app.get('/google',passport.authenticate('google',{scope:['profile','email']})); //frontend make's a request here
 
-
+  app.get('/logout',(req,res)=>{
+    if(req.isAuthenticated()==true){
+      req.logOut((err)=>{
+        console.log('signed out')
+        res.send('OK');
+        res.end();
+      });
+    }
+   
+  })
 
   app.get('/auth/google',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/login',scope:['profile','email']}))
  
@@ -177,20 +186,8 @@ passport.use(new GoogleStrategy({
         res.redirect('/google')
     }
   })
-/*
-const EditorProfile=new mongoose.Schema(
-    {
-        googleId:String,
-        rating:String,
-        worksAssigned:String,
-        worksCompleted:String,
-        description:String,
-        skills:[String],
-        qualifications:[String],
-        rates:[{work:String,rate:String,level:String}],
-    }   
-)
-*/
+
+
   app.get('/registerEditor',async(req,res)=>{
     const user=await User.findOne({googleId:req.query.googleId});
     const profile=await EditorProfile.create({

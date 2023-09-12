@@ -126,7 +126,7 @@ youtubeServer.get('/google', async (req, res) => {
         console.error('Error:', error.message);
       });
   
-      res.redirect('http://localhost:5173');
+      res.redirect('http://localhost:5173/previous-task');
     })
    
     

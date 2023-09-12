@@ -51,7 +51,7 @@ const mongoose=require('mongoose');
     email:String,
     role:String,
     profilePic:String,//just have the file path
-   
+    profileURL:String,
 })
 
 
