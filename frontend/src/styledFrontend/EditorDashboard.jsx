@@ -4,20 +4,13 @@ import axios from 'axios';
 import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon} from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 const send=axios.create({
-  withCredentials:true //this ensure's that axio's is sending cookies along with the request
+  withCredentials:true 
 
 })
 import UploadIcon from '@mui/icons-material/Upload';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// videoOrdersUploaded should be recieved where in .order contain's all the information
 
-/*
-  three video card's at the top
-  a table at bottom 
-  when upload view is opened 
-  a normal upload component comes
-*/
 function TaskManagerAndCreateBundle({User,orders }) {
   const [editorRegisteredState,setEditorRegisteredState]=useState(User.registeredAsEditor); 
   const [currentTask, setCurrentTask] = useState(null);

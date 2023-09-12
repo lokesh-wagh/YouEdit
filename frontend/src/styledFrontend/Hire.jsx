@@ -34,11 +34,11 @@ export default function Hire({User,task}){
                     if(editor.googleId!=User.googleId){
                         return(
                             <Grid item xs={4} key={index}>
-                                 <Card style={{padding:'1%'}}>
+                                 <Card style={{padding:'1%',border:'2px solid gold'}}>
                                         
                                       <CardHeader
                                       action={<DropdownMenu rates={editor.rates} editorid={editor.googleId} handleRequest={handleRequest}></DropdownMenu>}></CardHeader>
-                                      <Avatar src={editor.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto'}}>
+                                      <Avatar src={editor.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
 
                                       </Avatar>
                                       <Divider></Divider>
@@ -142,6 +142,7 @@ function DropdownMenu({rates,editorid,handleRequest}) {
                 aria-controls="dropdown-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
+                style={{color:'gold'}}
               >
                <AttachMoneyOutlinedIcon></AttachMoneyOutlinedIcon>
               </IconButton>
@@ -159,7 +160,8 @@ function DropdownMenu({rates,editorid,handleRequest}) {
                          <CapsuleIconButtonWithDropDown rate={rate.rate} description={rate.description} level={rate.level}></CapsuleIconButtonWithDropDown>
                          <IconButton onClick={()=>{handleRequest(editorid)
                           handleClose()
-                        }}><YouTube></YouTube></IconButton>
+                        }}
+                        style={{color:'red'}}><YouTube></YouTube></IconButton>
                          
                       </MenuItem>
                     )
@@ -188,6 +190,8 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
         <CapsuleIconButton
           text={level}
           onClick={(e)=>{handleMenuClick(e)}}
+          style={{backgroundColor:'gold',fontSize:'2vh',fontFamily:'sans-serif'}}
+        
         />
   
         <Menu
@@ -197,8 +201,8 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose} >Description : {description}</MenuItem>
-          <MenuItem onClick={handleClose}>Rate : {rate}</MenuItem>
+          <MenuItem onClick={handleClose} style={{color:'black', fontSize:'2vh',fontFamily:'sans-serif'}} >Description : {description}</MenuItem>
+          <MenuItem onClick={handleClose} style={{color:'black', fontSize:'2vh',fontFamily:'sans-serif'}}>Rate : {rate}</MenuItem>
           
           
         </Menu>
@@ -206,7 +210,7 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
     );
   }
         
- function CapsuleIconButton({ text,onClick}) {
+ function CapsuleIconButton({ text,onClick,style}) {
     const capsuleButtonStyle = { 
       
       borderRadius: '999px', // Makes the button shape like a capsule
@@ -216,12 +220,15 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
       justifyContent: 'center',
       margin:'2px',
       height:'8%',
-        backgroundColor:'#ffffff'
+        backgroundColor:'#F7F9FC',
+        border:'2px solid gold',
+      ...style,
     };
   
     const typographyStyle = {
       marginLeft: '8px',
-      fontSize:'14px'
+      color:'black',
+      fontFamily:'sans-serif'
     };
   
     return (
@@ -231,7 +238,7 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
         }
       }}>
        
-        <Typography variant="body1" style={typographyStyle}>
+        <Typography variant="body1" style={typographyStyle} >
           {text}
         </Typography>
       </IconButton>

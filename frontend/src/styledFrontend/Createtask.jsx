@@ -39,7 +39,7 @@ export default function CreateTask({ User }) {
         <div style={{marginTop:'15%',marginLeft:'25%'}}>
    <Grid container spacing={4}>
     <Grid item xs={12} md={6} lg={4}>
-    <Card elevation={1}>
+    <Card elevation={1} style={{border:'2px solid gold'}}>
         <CardHeader
           
           
@@ -52,7 +52,7 @@ export default function CreateTask({ User }) {
       </Card>
     </Grid>
     <Grid item xs={12} md={6} lg={4}>
-    <Card elevation={1} >
+    <Card elevation={1} style={{border:'2px solid gold'}}>
         <CardHeader
           
           
@@ -70,7 +70,7 @@ export default function CreateTask({ User }) {
       
          
       <IconButton onClick={handleSubmit} style={{position:'absolute',bottom:'10vh',right:'5vw'}} >
-        <AddCircleIcon style={{fontSize:'100px'}}></AddCircleIcon>
+        <AddCircleIcon style={{fontSize:'100px',color:'gold'}}></AddCircleIcon>
       </IconButton>
     </Grid>
   
@@ -180,14 +180,14 @@ import * as tus from 'tus-js-client'
           {data}
         </Typography>
         <input style={{display:'none'}} ref={inputRef} type="file" id="file" name="file" onChange={handleFileChange} />
-        <IconButton onClick={openUploader}>
+        <IconButton onClick={openUploader} style={{color:'blue'}}>
             <CloudUploadRoundedIcon></CloudUploadRoundedIcon>
         </IconButton>
-        <IconButton onClick={resumeUpload} ref={resumeButtonRef}>
+        <IconButton onClick={resumeUpload} ref={resumeButtonRef} style={{color:'red'}}>
             <PlayArrowRoundedIcon></PlayArrowRoundedIcon>
         </IconButton>
-        <IconButton onClick={stopUpload} ref={pauseButtonRef}>
-            <PauseCircleFilledRoundedIcon></PauseCircleFilledRoundedIcon>
+        <IconButton onClick={stopUpload} ref={pauseButtonRef} style={{color:'green'}}>
+            <PauseCircleFilledRoundedIcon></PauseCircleFilledRoundedIcon >
         </IconButton>
     </Container>
   );

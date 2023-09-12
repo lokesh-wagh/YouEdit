@@ -21,7 +21,7 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Avatar, AvatarGroup, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Avatar, AvatarGroup, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Tooltip, colors } from '@mui/material';
 
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
@@ -105,19 +105,19 @@ export default function TaskManager({ tasks, User ,setUser}) {
       case "application":
         return(
        
-            <PictureAsPdfIcon>
+            <PictureAsPdfIcon style={{color:'red'}}>
 
             </PictureAsPdfIcon>
           
         )
         case "image":
           return (
-            <InsertPhotoIcon></InsertPhotoIcon>
+            <InsertPhotoIcon style={{color:'gold'}}></InsertPhotoIcon>
           )
         case "video":
-          return (<SlideshowIcon></SlideshowIcon>)
+          return (<SlideshowIcon style={{color:'blue'}}></SlideshowIcon>)
         default :
-        return (<AddAPhotoOutlined></AddAPhotoOutlined>)
+        return (<AddAPhotoOutlined style={{color:'orange'}}></AddAPhotoOutlined>)
     }
   }
   
@@ -135,13 +135,13 @@ export default function TaskManager({ tasks, User ,setUser}) {
       
           <Grid container style={{paddingTop:'2%' ,maxHeight:"40%"}}>
             <Grid item xs={3.5}></Grid>
-            <Grid item xs={5} >
-            <Card elevation={1} style={{maxHeight:"80vh",overflowY:"auto"}} className='previewCard'>
+            <Grid item xs={5} style={{border:'4px solid gold'}} >
+            <Card elevation={1} style={{maxHeight:"80vh",overflowY:"auto",}} className='previewCard'>
             <CardHeader
               action={<DropdownMenu2 task={currentTask} handleDownloadResources={handleDownloadResources} handleDownloadVideo={handleDownloadVideo}></DropdownMenu2>}
               title={'Previewing a Video'}
               subheader={'video id is '+currentTask.id}
-              avatar={<IconButton onClick={handleBackClick}>
+              avatar={<IconButton onClick={handleBackClick} style={{color:'black'}}>
                 <ArrowBackIcon></ArrowBackIcon>
               </IconButton>}
             >
@@ -188,7 +188,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
                               {resource.media.fileName}
                           </TableCell>
                           <TableCell>
-                            <IconButton onClick={() => handleDeleteResource(resource.media.fileName, User.googleId, currentTask.id)}>
+                            <IconButton onClick={() => handleDeleteResource(resource.media.fileName, User.googleId, currentTask.id)} style={{color:'blue'}}>
                               <DeleteIcon></DeleteIcon>
                             </IconButton>
                           </TableCell>
@@ -238,7 +238,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
                     return (
                         
                         <Grid item xs={4} key={index} >
-                            <Card elevation={1} style={{padding:'2vw'}}>
+                            <Card elevation={1} style={{padding:'2vw',border:'2px solid gold'}}>
                                 <CardHeader
                                 
                                 action={<DropdownMenu task={task} handleTaskClick={handleTaskClick}>
@@ -295,21 +295,34 @@ export default function TaskManager({ tasks, User ,setUser}) {
                                   
                                     <TableCell style={{width:'5vw',alignItems:'left'}}>
                                     <div className={`row-buttons-${index}`} style={{ display: 'none' }}>
-                                            <IconButton onClick={() => handleTaskClick(task,'edit')}>
-                                                <PreviewIcon></PreviewIcon>
-                                            </IconButton>
-                                            <IconButton onClick={() => handleTaskClick(task,'hire')}>
-                                                <AddAPhotoOutlined></AddAPhotoOutlined>
-                                            </IconButton>
-                                            <IconButton onClick={()=> handleTaskClick(task,'finalize')}>
+                                
+                                            <Tooltip arrow title={"Preview"}>
+                                              <IconButton onClick={() => handleTaskClick(task,'edit')} style={{color:'blue'}}>
+                                                  <PreviewIcon></PreviewIcon>
+                                              </IconButton>
+                                            </Tooltip>
+                                            <Tooltip arrow title={"Hire Editor"}>
+                                              <IconButton onClick={() => handleTaskClick(task,'hire') } style={{color:'orange'}}>
+                                                  <AddAPhotoOutlined></AddAPhotoOutlined>
+                                              </IconButton>
+                                            </Tooltip>
+                                            <Tooltip arrow title={"See Upload's By Editor's"}>
+                                            <IconButton onClick={()=> handleTaskClick(task,'finalize')} style={{color:'red'}}>
                                                 <YouTubeIcon></YouTubeIcon>
                                             </IconButton>
-                                            <IconButton onClick={()=>{handleDownloadResources(task)}}>
+                                            </Tooltip>
+                                            <Tooltip arrow title={"Download Resources"}>
+                                            <IconButton onClick={()=>{handleDownloadResources(task)}} style={{color:'green'}}>
                                                 <DownloadIcon></DownloadIcon>
                                             </IconButton>
-                                            <IconButton onClick={()=>{handleDownloadVideo(task)}}>
+                                            </Tooltip>
+                                            <Tooltip arrow title={"Download Video"}>
+                                              
+                                            <IconButton onClick={()=>{handleDownloadVideo(task)}} style={{color:'gold'}}>
                                                 <WebAssetIcon></WebAssetIcon>
                                             </IconButton>
+                                            </Tooltip>
+                                            
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -335,6 +348,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import styled from '@emotion/styled';
 
 function DropdownMenu({task,handleTaskClick}) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -353,6 +367,7 @@ function DropdownMenu({task,handleTaskClick}) {
         aria-controls="dropdown-menu"
         aria-haspopup="true"
         onClick={handleClick}
+        style={{color:'black'}}
       >
        <MoreVertIcon></MoreVertIcon>
       </IconButton>
@@ -365,19 +380,19 @@ function DropdownMenu({task,handleTaskClick}) {
       >
         <MenuItem onClick={handleClose}>
            <ListItemIcon>
-                <IconButton onClick={()=>{handleTaskClick(task,'finalize')}}>
+                <IconButton onClick={()=>{handleTaskClick(task,'finalize')}} style={{color:'red'}}>
                         <YouTubeIcon>
                           
                         </YouTubeIcon>
                 </IconButton>
            </ListItemIcon>
-           <ListItemText onClick={()=>{handleTaskClick(task,'finalize')}}>
+           <ListItemText onClick={()=>{handleTaskClick(task,'finalize')}} >
                  Upload
            </ListItemText>
         </MenuItem>
         <MenuItem onClick={handleClose} >
             <ListItemIcon>
-                <IconButton onClick={()=>{handleTaskClick(task,'hire')}}>
+                <IconButton onClick={()=>{handleTaskClick(task,'hire')}} style={{color:'orange'}}>
                     <AddAPhotoOutlined>
                         
                     </AddAPhotoOutlined>
@@ -412,6 +427,7 @@ function DropdownMenu2({task,handleDownloadVideo,handleDownloadResources}) {
         aria-controls="dropdown-menu"
         aria-haspopup="true"
         onClick={handleClick}
+        style={{color:'black'}}
       >
        <MoreVertIcon></MoreVertIcon>
       </IconButton>
@@ -424,7 +440,7 @@ function DropdownMenu2({task,handleDownloadVideo,handleDownloadResources}) {
       >
         <MenuItem onClick={handleClose}>
            <ListItemIcon>
-                <IconButton onClick={()=>{handleDownloadResources(task)}}>
+                <IconButton onClick={()=>{handleDownloadResources(task)}} style={{color:'green'}}>
                         <DownloadIcon>
 
                         </DownloadIcon>

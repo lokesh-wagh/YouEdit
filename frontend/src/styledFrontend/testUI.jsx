@@ -18,7 +18,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { AddCircleOutlineOutlined, SubjectOutlined } from '@mui/icons-material';
+import { AddCircleOutlineOutlined, AddShoppingCart, SubjectOutlined } from '@mui/icons-material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
@@ -144,7 +144,7 @@ const menuItems = [
   },
   {
     text: 'Get a Video Edited',
-    icon: <AddCircleOutlineOutlined color="secondary" />,
+    icon: <AddShoppingCart color="secondary" />,
     path: '/creator/create-task'
   },
   {
@@ -161,50 +161,23 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
 
   const history = useNavigate();
   const location = useLocation();
-  
-  const theme = createTheme({
-    palette: {
-      primary: {
-        light:'#009be5',
-        dark:'#081627',
-        main: '#1a73e8', // Google Docs' blue color
-      },
-      secondary: {
-        main: '#D3E3FD', // White color
-      },
-      background: {
-        default: '#ffffff', // White background
-        paper: '#f1f3f4',   // Light gray paper background
-      },
-      text: {
-        primary: '#333333', // Primary text color
-        secondary: '#666666', // Secondary text color
-      },
-    },
-    typography: {
-      fontFamily: 'Arial, sans-serif', // You can adjust the font family
-      fontSize: 16,
-    },
-    spacing: 8,
-  });
+ 
   
 
   
 
   return (
-    <ThemeProvider theme={theme}>
-    <div style={{ display: 'flex',background:'#f1f3f4'}}>
-      {/* app bar */}
+    
+    <div style={{ display: 'flex',background:'#F7F9FC'}}>
+      
       <AppBar
         position="fixed"
-        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth,background:'#f1f3f4'}}
+        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth,background:'#F7F9FC'}}
         elevation={0}
      
       >
-        <Toolbar style={{height:appbarHeight+'vh'}}>
-          <Typography style={{ flexGrow: 1 }}>
-            Today is the Lauden bhujyam day
-          </Typography>
+        <Toolbar style={{height:appbarHeight+'vh',display:'flex',flexDirection:'row-reverse'}}>
+         
           
           <IconButton onClick={()=>{
             setProfileOpen(true);
@@ -224,12 +197,13 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
         PaperProps={{sx:{
           width:drawerWidth,
           border:'none',  
+          backgroundColor:'#F7F9FC'
         }}}
         anchor="left"
       >
         <div>
           <Typography variant="h5" style={{ padding: '2rem' }}>
-            YOUEDIT
+          😍Made By Lokesh😍
           </Typography>
         </div>
 
@@ -267,7 +241,7 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
         </div>
       </div>
     </div>
-    </ThemeProvider>
+   
   );
 }
 
@@ -296,7 +270,9 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                         avatar={
                           <IconButton onClick={()=>{
                             setProfileOpen(false);
-                          }}>
+                          }}
+                          style={{color:'black'}}
+                          >
                             <ArrowBackIcon></ArrowBackIcon>
                           </IconButton>
                         }
@@ -306,20 +282,22 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                         <Tooltip title="logout??" arrow>
                              <IconButton onClick={()=>{
                           handleLogout();
-                        }}>
+                        }}
+                        style={{color:'red'}}>
                           <LogoutIcon></LogoutIcon>
                         </IconButton>
                         </Tooltip>
                         <IconButton onClick={()=>{
                           setEditOpen(true);
-                        }}>
+                        }}
+                        style={{color:'blue'}}>
                           <EditRoundedIcon>
 
                           </EditRoundedIcon>
                         </IconButton>
                         </>
                        }/>
-                        <Avatar src={user.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto'}}>
+                        <Avatar src={user.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
 
                         </Avatar>
                         <Divider></Divider>
@@ -404,8 +382,8 @@ function EditorRegister({User,setUser}){
     descriptionRate:'',
   });
   const [skillsList, setSkillsList] = useState(User.editorProfile.skills);
-  const [qualificationList,setQualificationList]=useState(User.editorProfile.qualifications);
-  const [rateList,setRateList]=useState(User.editorProfile.rates);
+  const [qualificationList,setQualificationList]=useState(User.editorProfile.qual);
+  const [rateList,setRateList]=useState([]);
   const handleClose = () => {
     setOpen(false);
   };
@@ -600,7 +578,8 @@ function CapsuleIconButton({ text,onClick}) {
     justifyContent: 'center',
     margin:'2px',
     height:'8%',
-      backgroundColor:'#ffffff'
+    backgroundColor:'#F7F9FC',
+    border:'2px solid gold',
   };
 
   const typographyStyle = {
