@@ -1,13 +1,23 @@
-import  { useEffect, useState } from 'react';
+import  { useEffect, useRef, useState } from 'react';
+import WebAssetIcon from '@mui/icons-material/WebAsset';
 import axios from 'axios';
-import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert} from '@mui/material'
+import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon} from '@mui/material'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 const send=axios.create({
   withCredentials:true //this ensure's that axio's is sending cookies along with the request
 
 })
+import UploadIcon from '@mui/icons-material/Upload';
 import CancelIcon from '@mui/icons-material/Cancel';
-import Upload from '../TusUpload'; // Import your upload component
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // videoOrdersUploaded should be recieved where in .order contain's all the information
+
+/*
+  three video card's at the top
+  a table at bottom 
+  when upload view is opened 
+  a normal upload component comes
+*/
 function TaskManagerAndCreateBundle({User,orders }) {
   const [editorRegisteredState,setEditorRegisteredState]=useState(User.registeredAsEditor); 
   const [currentTask, setCurrentTask] = useState(null);
@@ -18,7 +28,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
           setYcode(res.data);        
       })
   },[currentTask]);
-  console.log(User);
+  console.log(orders);
   const handleUploadClick = (task) => {
     
     setCurrentTask(task);
@@ -39,6 +49,14 @@ function TaskManagerAndCreateBundle({User,orders }) {
     window.location.href=`http://localhost:3000/download?id=${orderId}`;
     console.log(`Downloading video for Order ${orderId}`);
   }
+  const handleRowHover = (index) => {
+    const buttons = document.getElementsByClassName(`row-buttons-${index}`);
+    for (const button of buttons) {
+      button.style.display = 'block';
+    }
+  };
+  
+ 
   
 function handleDownloadResources(orderId) {
   window.location.href=`http://localhost:3000/download-zip?id=${orderId}`
@@ -55,31 +73,121 @@ function handleDownloadResources(orderId) {
         
         {currentTask === null ? (
        
-          <div>
-            {orders.map((order) => (
-              <div key={order.order.id}>
-                <h1>This is order view</h1>
-                <h2>Order {order.order.id}</h2>
-                <video controls width="400">
-                  <source src={`http://localhost:3000/stream?id=${order.order.orignalVideo.fileName}`} type={order.order.orignalVideo.mimeType} />
-                  Your browser does not support the video tag.
-                </video>
-                <button onClick={() => handleDownloadVideo(order.order.orignalVideo.fileName)}>Download Video</button>
-                <button onClick={() => handleDownloadResources(order.order.id)}>Download Resources</button>
-                <button onClick={() => handleUploadClick(order)}>Upload</button>
-              </div>
-            ))}
+                <div style={{marginTop:'5%',marginLeft:'1vw',marginRight:'1vw'}}>
+                 
+                <Grid container spacing={6}>
+                 
+                     {orders.map((task,index)=>{
+                         var bool=false;
+                         for(let i=0;i<User.videoOrdersUploaded.length;i++){
+                          
+                          if(User.videoOrdersUploaded[i].taskid==task.order.id){
+                            bool=true;
+                          }
+                         }
+                        
+                         
+                         return (
+                             
+                             <Grid item xs={4} key={index} >
+                                 <Card elevation={1} style={{padding:'2vw'}}>
+                                     <CardHeader
+                                     //will fix this
+                                     avatar={
+                                     bool&&(<CheckCircleIcon></CheckCircleIcon>)
+                                     }
+                                     action={
+                                      
+                                      <ButtonGroup>
+                                           <IconButton disabled={bool} onClick={()=>{
+                                            if(bool==false){
+                                            handleUploadClick(task)
+                                            }
+                                        }}>
+                                            <UploadIcon></UploadIcon>
+                                        </IconButton>
+                                        <IconButton onClick={()=>{
+                                           handleDownloadVideo(task.order.orignalVideo.fileName)
+                                        }}>
+                                          <WebAssetIcon></WebAssetIcon>
+                                        </IconButton>
+                                        <IconButton onClick={()=>{
+                                          handleDownloadResources(task.order.id)
+                                        }}>
+                                            <Download></Download>
+                                        </IconButton>
+                                      </ButtonGroup>
+                                       
+                                     }
+                                     title={'Suggested video tasks'}
+                                     subheader={'task id is '+task.order.id}
+                                     />
+                                     <CardMedia
+                                         
+                                         component="video"
+                                         controls // Add this attribute to display video controls (play, pause, volume, etc.)
+                                         src={`http://localhost:3000/stream?id=${task.order.orignalVideo.fileName}`}
+                                         title="Your Video Title"
+                                     />
+                                     <CardContent>
+                                         Click on the three dot
+                                     </CardContent>
+                                 </Card>
+                             </Grid>
+                         )
+                     })}
+                     </Grid>
+            
           </div>
         ) : (
           
-          <div>
-            <button onClick={handleBackToNormalView}>Back to Normal View</button>
-            <h2>Upload View for Order {currentTask.order.id}</h2>
-            {/* Render the UploadComponent with the currentTask */}
-            <Upload User={User} code={currentTask.order.id} role={'editedVideo'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
-            <Upload User={User} code={currentTask.order.id} role={'editedThumbnail'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
-            <button onClick={handleFinish}>finish editing upload</button>
-          </div>
+          // <div>
+          //   <button onClick={handleBackToNormalView}>Back to Normal View</button>
+          //   <h2>Upload View for Order {currentTask.order.id}</h2>
+          //   {/* Render the UploadComponent with the currentTask */}
+          //   <Upload User={User} code={currentTask.order.id} role={'editedVideo'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
+          //   <Upload User={User} code={currentTask.order.id} role={'editedThumbnail'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
+          //   <button onClick={handleFinish}>finish editing upload</button>
+          // </div>
+          <div style={{marginTop:'15%',marginLeft:'25%'}}>
+          <Grid container spacing={4}>
+           <Grid item xs={12} md={6} lg={4}>
+           <Card elevation={1}>
+               <CardHeader               
+                 title={ 'Upload Video'}
+                 subheader={ 'Upload your Video'}
+               />
+               <CardContent>
+                   <Upload User={User} code={currentTask.order.id} role={'editedVideo'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
+               </CardContent>
+             </Card>
+           </Grid>
+           <Grid item xs={12} md={6} lg={4}>
+           <Card elevation={1} >
+               <CardHeader
+                 
+                 
+                 title={ 'Upload Thumbanail'}
+                 subheader={ 'Upload your Thumbnail Here'}
+               />
+               <CardContent>
+                   <Upload User={User} code={currentTask.order.id} role={'editedThumbnail'} bundlereciever={currentTask.ownerid} ycode={ycode}/>
+               </CardContent>
+             </Card>
+           </Grid>
+           <Grid item xs={12}>
+              
+                
+             
+                
+             <IconButton onClick={handleFinish} style={{position:'absolute',bottom:'10vh',right:'5vw'}} >
+               <AddCircleIcon style={{fontSize:'100px'}}></AddCircleIcon>
+             </IconButton>
+           </Grid>
+         
+          
+             </Grid>  
+             </div>
         )}
       </div>
     );
@@ -87,6 +195,7 @@ function handleDownloadResources(orderId) {
 
   
 }
+
 
 function EditorRegister({User}){
   const [open, setOpen] = useState(true);
@@ -288,6 +397,9 @@ function EditorRegister({User}){
 
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { AddAPhotoOutlined, Download, PreviewOutlined } from '@mui/icons-material';
+import YouTube from '@mui/icons-material/YouTube';
+import { useTheme } from '@emotion/react';
 
  function CapsuleIconButton({ icon, text, onClick }) {
   const capsuleButtonStyle = {
@@ -313,9 +425,112 @@ import Typography from '@mui/material/Typography';
     </IconButton>
   );
 }
+import CloudUploadRoundedIcon from '@mui/icons-material/CloudUpload';
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import PauseCircleFilledRoundedIcon from '@mui/icons-material/PauseCircleFilledRounded';
+import * as tus from 'tus-js-client';
+function Upload({User,code,role,bundlereciever,ycode}) {
+  const theme=useTheme();
+  const [upload,setUpload]=useState(null);
+  const [data,setData]=useState('no file selected');
+  const inputRef=useRef(null);
+  const pauseButtonRef=useRef(null);
+  const resumeButtonRef=useRef(null);
+  const googleid=User.googleId;
+
+  function handleFileChange(){
+ 
+          
+
+   
+
+    
+      pauseButtonRef.current.disabled=false;
+      resumeButtonRef.current.disabled=false; //enable button's when new file selected
+      if(inputRef.current.files[0]!=null){
+        setData(inputRef.current.files[0].name+' is selected'); //display that file is selected
+      }
+      setUpload (new tus.Upload(inputRef.current.files[0], {
+          endpoint: "http://localhost:1080/storage/",
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          metadata: {
+            filename: inputRef.current.files[0].name,
+            filetype:inputRef.current.files[0].type,
+            id:googleid,
+            TaskCode:code,
+            role:role,
+            bundlereciever:bundlereciever==null?'nobody':bundlereciever,
+            YoutubeCode:ycode==null?'nobody':ycode,
+          },
+          chunkSize:100000,
+          removeFingerprintOnSuccess:true,
+          onError: function(error) {
+            setData("Failed because: " + error) //display error
+          },
+          onProgress: function (bytesUploaded, bytesTotal) {
+              const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+              
+              setData(percentage + '%');
+            },
+          onSuccess: function() {
+              pauseButtonRef.current.disabled=true;
+              resumeButtonRef.current.disabled=true;
+              setData('Upload completed successfully \n select a new file to unlock resume and pause\n');
+              
+          }
+      })
+      )
+
+      
+
+      
+          
+}
 
 
+function stopUpload(){
+  if(upload!=null){
+      upload.abort();
+  }
+}
+function openUploader(){
+  inputRef.current.click();
+}
 
+function resumeUpload() {
+      if(upload!=null){
+      
+          upload.findPreviousUploads().then(function (previousUploads) {
+             
+              if (previousUploads.length) {
+                  upload.resumeFromPreviousUpload(previousUploads[0])
+              }
+
+         
+              upload.start()
+          })
+      }
+  }
+ 
+return (
+  <Container>
+      <Typography>
+
+        {data}
+      </Typography>
+      <input style={{display:'none'}} ref={inputRef} type="file" id="file" name="file" onChange={handleFileChange} />
+      <IconButton onClick={openUploader}>
+          <CloudUploadRoundedIcon></CloudUploadRoundedIcon>
+      </IconButton>
+      <IconButton onClick={resumeUpload} ref={resumeButtonRef}>
+          <PlayArrowRoundedIcon></PlayArrowRoundedIcon>
+      </IconButton>
+      <IconButton onClick={stopUpload} ref={pauseButtonRef}>
+          <PauseCircleFilledRoundedIcon></PauseCircleFilledRoundedIcon>
+      </IconButton>
+  </Container>
+);
+}
 
 
 export default TaskManagerAndCreateBundle;

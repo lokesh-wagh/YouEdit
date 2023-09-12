@@ -37,7 +37,7 @@ export default function Hire({User,task}){
                                  <Card style={{padding:'1%'}}>
                                         
                                       <CardHeader
-                                      action={<DropdownMenu rates={editor.rates}></DropdownMenu>}></CardHeader>
+                                      action={<DropdownMenu rates={editor.rates} editorid={editor.googleId} handleRequest={handleRequest}></DropdownMenu>}></CardHeader>
                                       <Avatar src={editor.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto'}}>
 
                                       </Avatar>
@@ -125,7 +125,7 @@ export default function Hire({User,task}){
     )
 
         }
-function DropdownMenu({rates}) {
+function DropdownMenu({rates,editorid,handleRequest}) {
           const [anchorEl, setAnchorEl] = useState(null);
         
           const handleClick = (event) => {
@@ -157,7 +157,9 @@ function DropdownMenu({rates}) {
                     return(
                       <MenuItem  key={index}>
                          <CapsuleIconButtonWithDropDown rate={rate.rate} description={rate.description} level={rate.level}></CapsuleIconButtonWithDropDown>
-                         <IconButton onClick={()=>{alert('hiring editor')}}><YouTube></YouTube></IconButton>
+                         <IconButton onClick={()=>{handleRequest(editorid)
+                          handleClose()
+                        }}><YouTube></YouTube></IconButton>
                          
                       </MenuItem>
                     )

@@ -1,6 +1,10 @@
 /*
   1. use ToolTip on all the icon's so the user know's the UI well
-
+  remaining 
+    Finalize view
+    Editor Preview
+    Editor Orders
+    
 */
 
 import axios from 'axios';
@@ -24,7 +28,7 @@ import CreatorDashboard from '../CreatorDashboard';
 import LandingPage from './LandingPage';
 import CreateTask from './CreateTask';
 import TaskManagerAndCreateBundle from './EditorDashboard';
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EmergencyRecordingRoundedIcon from '@mui/icons-material/EmergencyRecordingRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -65,7 +69,12 @@ function App() {
         });
     }
   }, [authenticated]);
-
+  function handleLogout(){
+      send.get('http://localhost:8000/logout').then(()=>{
+        setAuthenticated(false);
+        setUser(null);
+      })
+  }
   if (user === null) {
     send.get('http://localhost:8000/user')
       .then((res) => {
@@ -88,17 +97,18 @@ function App() {
     <>
       {/* here we will have the navbar and a side bar and buttons to call the routes shown below */}
      
-      <Layout>
+      <Layout handleLogout={handleLogout}>
         <Routes>
        
             <Route path='/' element={<LandingPage />} />
-            <Route path='/creator' element={<CreatorDashboard user={user} />} />
-            <Route path='/creator/create-task' element={<CreateTask User={user || { googleId: '11231231' }} />} />
-            <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user || { googleId: '11231231' }} tasks={(user && user.tasks) || {}} />} />
-            <Route path='/editor' element={<TaskManagerAndCreateBundle User={user || { googleId: '11231231' }} orders={(user && user.videoOrdersAssigned) || {}} />} />
-          
-        </Routes>
-      </Layout>
+      
+              <Route path='/creator' element={<CreatorDashboard user={user} />} />
+              <Route path='/creator/create-task' element={<CreateTask User={user || { googleId: '11231231' }} />} />
+              <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user || { googleId: '11231231' }} tasks={(user && user.tasks) || {}} setUser={setUser}/>} />
+              <Route path='/editor' element={<TaskManagerAndCreateBundle User={user || { googleId: '11231231' }} orders={(user && user.videoOrdersAssigned) || {}} />} />
+            
+          </Routes>
+          </Layout>
       
     </>
   ) : (
@@ -111,7 +121,7 @@ function App() {
 
 const drawerWidth = 300;
 const appbarHeight=7;
-const menuItemsCreator = [
+const menuItems = [
   {
     text: 'See Previous Editing',
     icon: <SubjectOutlined color="secondary" />,
@@ -122,19 +132,18 @@ const menuItemsCreator = [
     icon: <AddCircleOutlineOutlined color="secondary" />,
     path: '/creator/create-task'
   },
-  
-]
-const menuItemsEditor=[
   {
     text:'See Your Editing Orders',
     icon:<AddCircleOutlineOutlined color="secondary" />,
     path:'/editor'
   }
+  
 ]
 
-function Layout({ children}) {
+
+function Layout({ children,handleLogout}) {
   const [selectedItem,setSelectedItem]=useState(null);
-  const [menuItems,setMenuItems]=useState(menuItemsCreator);
+
   const history = useNavigate();
   const location = useLocation();
   // const menuItems=menuItemsCreator;
@@ -187,15 +196,21 @@ function Layout({ children}) {
           </Typography>
           <IconButton onClick={()=>{
             setSelectedItem(0);
-            setMenuItems(menuItemsEditor)}}>
+            }}>
             <EditRoundedIcon fontSize='large'></EditRoundedIcon>
           </IconButton>
           <IconButton onClick={()=>{
             setSelectedItem(0);
-            setMenuItems(menuItemsCreator)}}>
+         }}>
             <EmergencyRecordingRoundedIcon fontSize='large'></EmergencyRecordingRoundedIcon>
           </IconButton>
-          <Avatar style={{ marginLeft: '2rem' }} src="/mario-av.png" />
+          <IconButton onClick={()=>{
+            handleLogout();
+          }}>
+            <LogoutIcon fontSize='large'>
+
+            </LogoutIcon>
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -213,7 +228,7 @@ function Layout({ children}) {
       >
         <div>
           <Typography variant="h5" style={{ padding: '2rem' }}>
-            Ninja Notes
+            YOUEDIT
           </Typography>
         </div>
 

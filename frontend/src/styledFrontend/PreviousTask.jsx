@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './Scrollbar.css'
-import { AddAPhotoOutlined, DeleteOutline, ImportContacts, TableView } from '@mui/icons-material';
+import { AddAPhotoOutlined } from '@mui/icons-material';
 import Finalize from './Finalize';
 import Hire from './Hire';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -20,13 +20,24 @@ import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { Avatar, AvatarGroup, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 
-import { Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText } from '@mui/material';
+const send = axios.create({
+  withCredentials: true, // this ensures that axios is sending cookies along with the request
+});
 
-export default function TaskManager({ tasks, User }) {
+export default function TaskManager({ tasks, User ,setUser}) {
   const [currentTask, setCurrentTask] = useState(null);//temporary fix
   const [currentThing, setCurrentThing] = useState(null);
   
+  useEffect(()=>{
+    send.get('http://localhost:8000/user').then((res)=>{
+      setUser(res.data);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  },[])
   function formatISODate(isoDateString) {
     const date = new Date(isoDateString);
   
@@ -39,6 +50,7 @@ export default function TaskManager({ tasks, User }) {
   
     return new Intl.DateTimeFormat("en-US", options).format(date);
   }
+
   const handleTaskClick = (task,thing) => {
     setCurrentTask(task);
     setCurrentThing(thing);
@@ -212,7 +224,7 @@ export default function TaskManager({ tasks, User }) {
         content=(
           <div>
          
-             <button onClick={handleBackClick}>Back to Previous Tasks</button>
+             <button onClick={handleBackClick}>Finalize</button>
              <Finalize User={User} task={currentTask}></Finalize>
           </div>
         )
@@ -258,6 +270,7 @@ export default function TaskManager({ tasks, User }) {
                  <TableHead>
                     <TableRow>
                         <TableCell>Name/id</TableCell>
+                      
                         <TableCell>CreationDate</TableCell>
                         <TableCell>Number of Resources</TableCell>
                         <TableCell>Actions</TableCell>
@@ -266,6 +279,7 @@ export default function TaskManager({ tasks, User }) {
                  <TableBody>
                     {
                         tasks.map((task,index)=>{
+                          console.log(task)
                             return (
                                 <TableRow
                                 style={{height:'10vh'}}
@@ -275,8 +289,10 @@ export default function TaskManager({ tasks, User }) {
                                   onMouseLeave={() => handleRowMouseLeave(index)}
                                 >
                                     <TableCell style={{width:'2vw',alignItems:'left'}}>{task.id}</TableCell>
+                                   
                                     <TableCell style={{width:'2vw',alignItems:'left'}}>{formatISODate(task.orignalVideo.creationDate)}</TableCell>
                                     <TableCell style={{width:'2vw',alignItems:'left'}}>{task.resources.length}</TableCell>
+                                  
                                     <TableCell style={{width:'5vw',alignItems:'left'}}>
                                     <div className={`row-buttons-${index}`} style={{ display: 'none' }}>
                                             <IconButton onClick={() => handleTaskClick(task,'edit')}>

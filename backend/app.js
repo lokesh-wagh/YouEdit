@@ -257,7 +257,9 @@ app.get('/finishbundle',async(req,res)=>{
   const bundle=await YoutubeBundle.findOne({id:req.query.code});
   const task=await VideoTask.findOne({id:bundle.taskid});
   const user=await User.findOne({googleId:req.query.id}); //here user represent's the owner
-  
+  const editor=await User.findOne({googleId:req.user.googleId});
+  editor.videoOrdersUploaded.push(bundle);
+  await editor.save();
   var count=0;
   
   console.log(bundle);
