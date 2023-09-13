@@ -83,13 +83,7 @@ export default function CreateTask({ User }) {
 
 import * as tus from 'tus-js-client'
 
- // upload component has no known bug's
- /*
-  this component solely handles the upload to the website
-  upload is of all type
-  
- */
- 
+
  function Upload({User,code,role,bundlereciever,ycode}) {
     const theme=useTheme();
     const [upload,setUpload]=useState(null);

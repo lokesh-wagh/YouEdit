@@ -1,7 +1,7 @@
 import  { useEffect, useRef, useState } from 'react';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import axios from 'axios';
-import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon} from '@mui/material'
+import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon, Tooltip} from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 const send=axios.create({
   withCredentials:true 
@@ -10,18 +10,19 @@ const send=axios.create({
 import UploadIcon from '@mui/icons-material/Upload';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-
+import CloseIcon from '@mui/icons-material/Close';
 function TaskManagerAndCreateBundle({User,orders }) {
   const [editorRegisteredState,setEditorRegisteredState]=useState(User.registeredAsEditor); 
   const [currentTask, setCurrentTask] = useState(null);
   const [ycode,setYcode]=useState(0);
+  const [snackBar,setSnackBar]=useState(null)
   useEffect(()=>{
       send.get('http://localhost:8000/createbundle').then((res)=>{
-        console.log(res);
+    
           setYcode(res.data);        
       })
   },[currentTask]);
-  console.log(orders);
+
   const handleUploadClick = (task) => {
     
     setCurrentTask(task);
@@ -61,6 +62,30 @@ function handleDownloadResources(orderId) {
     )
   }
   else{
+
+    if(orders==null||orders.length==0){
+     
+      return(
+        <Snackbar
+        open={true}
+        autoHideDuration={null} // Set to `null` to make it not automatically close
+        onClose={()=>{}}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <Alert
+          severity="info"
+         
+        >
+          No Order to be Completed or Reviewed
+        </Alert>
+      </Snackbar>
+
+      )
+    }
+    else{
     return (
       <div>
         
@@ -87,33 +112,56 @@ function handleDownloadResources(orderId) {
                                      <CardHeader
                                      //will fix this
                                      avatar={
-                                     bool&&(<CheckCircleIcon></CheckCircleIcon>)
+                                     bool&&(
+                                     <Tooltip arrow title={'Already Uploaded!'}>
+                                        <CheckCircleIcon style={{color:'green'}}></CheckCircleIcon>
+                                     </Tooltip>
+                                     )
                                      }
                                      action={
                                       
                                       <ButtonGroup>
+                                        {bool?<Tooltip arrow title={'Upload Disabled'}>
                                            <IconButton disabled={bool} onClick={()=>{
                                             if(bool==false){
                                             handleUploadClick(task)
                                             }
-                                        }}>
+                                        }} 
+                                        style={{color:'black'}}>
                                             <UploadIcon></UploadIcon>
                                         </IconButton>
+                                        </Tooltip>:<Tooltip arrow title={'Upload'}>
+                                           <IconButton onClick={()=>{
+                                           
+                                            handleUploadClick(task)
+                                            
+                                        }} 
+                                        style={{color:'red'}}>
+                                            <UploadIcon></UploadIcon>
+                                        </IconButton>
+                                        </Tooltip>}
+                                        <Tooltip arrow title={"Download Video"}>
+                                     
                                         <IconButton onClick={()=>{
                                            handleDownloadVideo(task.order.orignalVideo.fileName)
-                                        }}>
+                                        }}
+                                        style={{color:'orange'}}>
                                           <WebAssetIcon></WebAssetIcon>
                                         </IconButton>
+                                        </Tooltip>
+                                        <Tooltip arrow title={"Download resource zip file"}>
                                         <IconButton onClick={()=>{
                                           handleDownloadResources(task.order.id)
-                                        }}>
+                                        }} style={{color:'blue'}}>
                                             <Download></Download>
                                         </IconButton>
+                                        </Tooltip>
+                                       
                                       </ButtonGroup>
                                        
                                      }
-                                     title={'Suggested video tasks'}
-                                     subheader={'task id is '+task.order.id}
+                                     
+                                    title={`This Task is Assigned by ${task.ownerid}`}
                                      />
                                      <CardMedia
                                          
@@ -177,6 +225,7 @@ function handleDownloadResources(orderId) {
         )}
       </div>
     );
+        }
   }
 
   

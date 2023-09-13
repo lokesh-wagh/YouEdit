@@ -146,7 +146,9 @@ app.get('/thumbnail',async (req, res) => {
     }
   });
 });
-
+app.get('/resource/websiteLogo',(req,res)=>{
+  res.sendFile(__dirname+'/logo.png')
+})
 // Function to determine content type based on file extension
 function getContentType(fileExtension) {
   switch (fileExtension) {

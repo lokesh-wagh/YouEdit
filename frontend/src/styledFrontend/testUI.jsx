@@ -382,8 +382,9 @@ function EditorRegister({User,setUser}){
     descriptionRate:'',
   });
   const [skillsList, setSkillsList] = useState(User.editorProfile.skills);
-  const [qualificationList,setQualificationList]=useState(User.editorProfile.qual);
+  const [qualificationList,setQualificationList]=useState(User.editorProfile.qualifications);
   const [rateList,setRateList]=useState([]);
+  console.log(User);
   const handleClose = () => {
     setOpen(false);
   };

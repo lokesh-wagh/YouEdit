@@ -190,16 +190,18 @@ youtubeServer.get('/upload',async (req,res)=>{
       }
       console.log(response.data)
       // here you are supposed to handle thumbnail upload
-      const videoId = response.data.id;
-      const thumbnailResponse = await service.thumbnails.set({
-        auth: auth,
-        videoId: videoId,
-        media: {
-          mimeType: 'image/png', // Adjust the MIME type if needed
-          body: fs.createReadStream(req.query.thumbnailpath), // This is the file stream being piped as the thumbnail
-        },
-      });
-      console.log('Thumbnail uploaded successfully:', thumbnailResponse.data);
+
+      
+      // const videoId = response.data.id;
+      // const thumbnailResponse = await service.thumbnails.set({
+      //   auth: auth,
+      //   videoId: videoId,
+      //   media: {
+      //     mimeType: 'image/png', // Adjust the MIME type if needed
+      //     body: fs.createReadStream(req.query.thumbnailpath), // This is the file stream being piped as the thumbnail
+      //   },
+      // });
+      // console.log('Thumbnail uploaded successfully:', thumbnailResponse.data);
       
     });
     }

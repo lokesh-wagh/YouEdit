@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './Scrollbar.css'
-import { AddAPhotoOutlined } from '@mui/icons-material';
+import { AddAPhotoOutlined, BackHand } from '@mui/icons-material';
 import Finalize from './Finalize';
 import Hire from './Hire';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -20,8 +20,8 @@ import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import CancelIcon from '@mui/icons-material/Cancel';
-import { Avatar, AvatarGroup, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Tooltip, colors } from '@mui/material';
+
+import {  Alert, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Snackbar, Tooltip,  } from '@mui/material';
 
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
@@ -216,6 +216,9 @@ export default function TaskManager({ tasks, User ,setUser}) {
       content = (
         <div>
           
+          <IconButton onClick={()=>{handleBackClick()}} style={{color:'black'}}>
+              <ArrowBackIcon></ArrowBackIcon>
+             </IconButton>
           <Hire User={User} task={currentTask} />
         </div>
       );
@@ -224,14 +227,33 @@ export default function TaskManager({ tasks, User ,setUser}) {
         content=(
           <div>
          
-             <button onClick={handleBackClick}>Finalize</button>
+             <IconButton onClick={()=>{handleBackClick()}} style={{color:'black'}}>
+              <ArrowBackIcon></ArrowBackIcon>
+             </IconButton>
              <Finalize User={User} task={currentTask}></Finalize>
           </div>
         )
     break;
     default:
       content = (
+
         <div style={{marginTop:'5%',marginLeft:'1vw',marginRight:'1vw'}}>
+           <Snackbar
+          open={true}
+          autoHideDuration={null} // Set to `null` to make it not automatically close
+          onClose={()=>{}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <Alert
+            severity="info"
+           
+          >
+            No Previous Task Uploaded
+          </Alert>
+        </Snackbar>
            <Grid container spacing={6}>
             
                 {tasks.slice(0,3).map((task,index)=>{

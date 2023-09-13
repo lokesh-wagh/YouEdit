@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Avatar, Box, Button, ButtonGroup, Card, CardContent, CardHeader,Container,Divider, Grid, IconButton, Menu, MenuItem, Rating, Tooltip, Typography } from "@mui/material";
+import { Alert, Avatar, ButtonGroup, Card, CardContent, CardHeader,Container,Divider, Grid, IconButton, Menu, MenuItem, Rating, Snackbar, Tooltip, Typography } from "@mui/material";
 import StarIcon from '@mui/icons-material/Star';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
-import { EditRoad, YouTube } from "@mui/icons-material";
+import {  YouTube } from "@mui/icons-material";
+import CloseIcon from '@mui/icons-material/Close';
 export default function Hire({User,task}){
     const [editors,setEditors]=useState(null);
-    console.log(editors);
+ 
     useEffect(()=>{
         axios.get('http://localhost:8000/hireList').then((res)=>{
             console.log(res.data);
@@ -22,11 +23,28 @@ export default function Hire({User,task}){
             console.log('success in hiring');
         })
     }
+   
     return(
         <>
         {
         editors==null?(
-            <></>
+          <Snackbar
+          open={true}
+          autoHideDuration={null} // Set to `null` to make it not automatically close
+          onClose={()=>{}}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <Alert
+            severity="info"
+           
+          >
+            No Editor to Be Hired
+          </Alert>
+        </Snackbar>
+  
         ):(
             <div style={{padding:'3%'}}>
                 <Grid container spacing={3}>

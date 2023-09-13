@@ -1,23 +1,22 @@
+import { Card, CardMedia, Grid } from "@mui/material";
 
 function LandingPage() {
-  return (
-    <div className="landing-page">
-      <h1>Welcome to Our Website</h1>
-      <p>Explore our amazing content and features.</p>
-      <button>
-        This is where the tutorial to website is going to be
-      </button>
-      <div className="button-container">
-        <a href="/creator" className="button">
-          <button>Creator</button>
-        </a>
-
-        <a href="/editor" className="button">
-          <button>Editor</button>
-        </a>
-      </div>
-    </div>
-  );
+ return (
+  <Grid container style={{marginTop:'10%'}}>
+    <Grid item xs={4}></Grid>
+    <Grid item xs={4}>
+    <Card>
+      <CardMedia
+      component={'img'}
+      src={"http://localhost:3000/resource/websiteLogo"}
+      >
+      
+      </CardMedia>
+    </Card>
+    </Grid>
+  </Grid>
+ 
+ )
 }
 
 export default LandingPage;

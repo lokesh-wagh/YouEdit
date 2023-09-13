@@ -1,4 +1,4 @@
-import { Avatar, Card, CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { Avatar, Card, CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from "@mui/material";
 
 export default function Finalize({User,task}){
 
@@ -21,24 +21,25 @@ export default function Finalize({User,task}){
           <Grid container spacing={3}>
              {task.editedVideo.map((bundle,index)=>{
               return(
-                <Grid item key={index} xs={4}>
-                  <Card>
+                <Grid item key={index} xs={6}>
+                  <Card style={{border:'2px solid gold'}}>
                     <CardHeader
-                      title={`edited by ${bundle.editor.username}`}
-                      avatar={<Avatar src={bundle.editor.profileURL}></Avatar>}
+                      title={ <Typography>{`Edited By ${bundle.editor.username}`}</Typography>}
+                      avatar={<Avatar src={bundle.editor.profileURL} style={{border:'2px solid lime'}}></Avatar>}
                       action={<DropdownMenu bundle={bundle} 
                       handleDownloadThumbnail={handleDownloadThumbnail} 
                       handleDownloadVideo={handleDownloadVideo} 
                       finalize={finalize}></DropdownMenu>}
                     >
                       </CardHeader>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={3} style={{padding:'1vw'}}>
                       <Grid item xs={6}>
                       <CardMedia 
                         component={'video'}
                         controls
                         src={`http://localhost:3000/stream?id=${bundle.video.fileName}`}
                         title={`video by editor`}
+                        
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -93,6 +94,7 @@ function DropdownMenu({bundle,handleDownloadThumbnail,handleDownloadVideo,finali
         aria-controls="dropdown-menu"
         aria-haspopup="true"
         onClick={handleClick}
+        style={{color:'black'}}
       >
        <MoreVertIcon></MoreVertIcon>
       </IconButton>
@@ -106,7 +108,7 @@ function DropdownMenu({bundle,handleDownloadThumbnail,handleDownloadVideo,finali
       >
         <MenuItem onClick={handleClose}>
            <ListItemIcon>
-                <IconButton onClick={()=>{finalize(bundle)}}>
+                <IconButton onClick={()=>{finalize(bundle)}} style={{color:'red'}}>
                         <YouTubeIcon>
                           
                         </YouTubeIcon>
@@ -118,7 +120,7 @@ function DropdownMenu({bundle,handleDownloadThumbnail,handleDownloadVideo,finali
         </MenuItem>
         <MenuItem onClick={handleClose} >
             <ListItemIcon>
-                <IconButton onClick={()=>{handleDownloadThumbnail(bundle)}}>
+                <IconButton onClick={()=>{handleDownloadThumbnail(bundle)}} style={{color:'green'}}>
                     <SimCardDownloadRoundedIcon>
 
                     </SimCardDownloadRoundedIcon>
@@ -132,7 +134,7 @@ function DropdownMenu({bundle,handleDownloadThumbnail,handleDownloadVideo,finali
         </MenuItem>
         <MenuItem onClick={handleClose} >
             <ListItemIcon>
-                <IconButton onClick={()=>{handleDownloadVideo(bundle)}}>
+                <IconButton onClick={()=>{handleDownloadVideo(bundle)}} style={{color:'blue'}}>
                     <VideoFileIcon></VideoFileIcon>
                 </IconButton>
             </ListItemIcon>
