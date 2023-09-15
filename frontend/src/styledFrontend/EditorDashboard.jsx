@@ -1,12 +1,14 @@
 import  { useEffect, useRef, useState } from 'react';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import axios from 'axios';
-import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon, Tooltip} from '@mui/material'
+import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon, Tooltip, Divider} from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 const send=axios.create({
   withCredentials:true 
 
 })
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import UploadIcon from '@mui/icons-material/Upload';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -322,7 +324,7 @@ function EditorRegister({User}){
           </Alert>
         </Snackbar>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Form Dialog</DialogTitle>
+        <DialogTitle>👾Register As Editor👾</DialogTitle>
         <DialogContent>
           <Card>
             <CardContent>
@@ -337,29 +339,43 @@ function EditorRegister({User}){
                 onChange={handleInputChange}
                
               />
+      
             
             <ButtonGroup style={{flexWrap:'wrap'}}>
                 {rateList.map((skill, index) => (
                  <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={`${skill.level}:${skill.description}-${skill.rate}`} onClick={()=>{handleRateDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
                 ))}
              </ButtonGroup>
-             
-               <TextField
+                <Grid container style={{margin:'0'}}>
+                  <Grid item xs={11}>
+                  <TextField
                 autoFocus
                 margin="dense"
                 name="level"
-                label="Level"
+                label="What is the Level of Work"
                 type="text"
                 fullWidth
                 value={formData.level}
                 onChange={handleInputChange}
                 onKeyDown={handleAddRate}
+                
               />
+                  </Grid>
+                  <Grid item xs={1}>
+                    <Tooltip arrow title={'This is the Work Section Tell what you do here'} >
+                
+                      <HelpRoundedIcon style={{color:'gold' ,marginTop:'50%',marginLeft:'30%'}}></HelpRoundedIcon>
+                    
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+              
+             
                <TextField
                 autoFocus
                 margin="dense"
                 name="descriptionRate"
-                label="what would you do"
+                label="what would you do in this level"
                 type="text"
                 fullWidth
                 value={formData.descriptionRate}
@@ -370,14 +386,14 @@ function EditorRegister({User}){
                 autoFocus
                 margin="dense"
                 name="rates"
-                label="Rates"
+                label="how much would you charge for this level of work"
                 type="text"
                 fullWidth
                 value={formData.rates}
                 onChange={handleInputChange}
                 onKeyDown={handleAddRate}
               />
-            
+             <Divider></Divider>
               <ButtonGroup style={{flexWrap:'wrap'}}>
                 {qualificationList.map((skill, index) => (
                   <CapsuleIconButton key={index} icon={<CancelIcon></CancelIcon>}  text={skill} onClick={()=>{handleQualificationDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
@@ -417,12 +433,13 @@ function EditorRegister({User}){
           </Card>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleFormSubmit} color="primary">
+         
+          {/* <Button onClick={handleFormSubmit} color="primary">
             Submit
-          </Button>
+          </Button> */}
+          <IconButton onClick={handleFormSubmit} style={{color:'greenyellow'}}>
+              <SendRoundedIcon style={{height:'50px',width:'50px'}}></SendRoundedIcon>
+          </IconButton>
         </DialogActions>
       </Dialog>
     </div>

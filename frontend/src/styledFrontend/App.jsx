@@ -75,6 +75,8 @@ function App() {
       send.get('http://localhost:8000/logout').then(()=>{
         setAuthenticated(false);
         setUser(null);
+      }).catch((err)=>{
+        console.log(err);
       })
   }
   if (user === null) {
@@ -342,7 +344,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                       
                               
                               <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
-
+                              
 
                               {
                               user.editorProfile.qualifications.map((skill,index)=>{

@@ -238,7 +238,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
       content = (
 
         <div style={{marginTop:'5%',marginLeft:'1vw',marginRight:'1vw'}}>
-           <Snackbar
+           {tasks==null&&<Snackbar
           open={true}
           autoHideDuration={null} // Set to `null` to make it not automatically close
           onClose={()=>{}}
@@ -254,6 +254,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
             No Previous Task Uploaded
           </Alert>
         </Snackbar>
+  }
            <Grid container spacing={6}>
             
                 {tasks.slice(0,3).map((task,index)=>{

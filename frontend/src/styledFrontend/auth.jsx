@@ -67,7 +67,9 @@ export default function Auth() {
                     ()=>{
                         handleShieldSnackBar();
                     }
-                }><ShieldIcon></ShieldIcon></IconButton>}
+                }
+                style={{color:'red'}}
+                ><ShieldIcon></ShieldIcon></IconButton>}
                 title={"Sign in to your account"}
                 subheader={"this is necessary for website to function"}
                 >
