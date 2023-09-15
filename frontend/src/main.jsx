@@ -1,6 +1,6 @@
 
 import ReactDOM from 'react-dom/client'
-import App from './styledFrontend/testUI'
+import App from './styledFrontend/App'
 import './index.css'
 import {BrowserRouter} from 'react-router-dom'
 import SignIn from './styledFrontend/Auth.jsx'
