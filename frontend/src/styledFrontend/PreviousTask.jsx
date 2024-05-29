@@ -22,7 +22,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
 import {  Alert, Card,CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Snackbar, Tooltip,  } from '@mui/material';
-
+import { FRONTEND_URL , BACKEND_URL , SERVE_URL , YOUTUBE_URL , TUS_URL } from '../config';
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
 });
@@ -32,7 +32,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
   const [currentThing, setCurrentThing] = useState(null);
   
   useEffect(()=>{
-    send.get('http://localhost:8000/user').then((res)=>{
+    send.get(BACKEND_URL + '/user').then((res)=>{
       setUser(res.data);
     }).catch((err)=>{
       console.log(err)
@@ -62,18 +62,18 @@ export default function TaskManager({ tasks, User ,setUser}) {
   };
 
   const handleDownloadVideo = (task) => {
-    window.location.href = `http://localhost:3000/download?id=${task.orignalVideo.fileName}`;
+    window.location.href = `${SERVE_URL}/download?id=${task.orignalVideo.fileName}`;
     console.log('Download video');
   };
 
   const handleDownloadResources = (task) => {
-    window.location.href = `http://localhost:3000/download-zip?id=${task.id}`;
+    window.location.href = `${SERVE_URL}/download-zip?id=${task.id}`;
     console.log('Download resources');
   };
 
   const handleDeleteResource = (id, userid, taskid) => {
     axios
-      .get(`http://localhost:3000/delete?fileid=${id}&userid=${userid}&taskid=${taskid}`)
+      .get(`${SERVE_URL}/delete?fileid=${id}&userid=${userid}&taskid=${taskid}`)
       .then((response) => {
         console.log(response);
 
@@ -151,7 +151,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
                                     
               component="video"
               controls // Add this attribute to display video controls (play, pause, volume, etc.)
-              src={`http://localhost:3000/stream?id=${currentTask.orignalVideo.fileName}`}
+              src={`${SERVE_URL}/stream?id=${currentTask.orignalVideo.fileName}`}
               title="Your Video Title"
             />
             <CardContent>
@@ -274,7 +274,7 @@ export default function TaskManager({ tasks, User ,setUser}) {
                                     
                                     component="video"
                                     controls // Add this attribute to display video controls (play, pause, volume, etc.)
-                                    src={`http://localhost:3000/stream?id=${task.orignalVideo.fileName}`}
+                                    src={`${SERVE_URL}/stream?id=${task.orignalVideo.fileName}`}
                                     title="Your Video Title"
                                 />
                                 <CardContent>

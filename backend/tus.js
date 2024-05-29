@@ -1,3 +1,5 @@
+require('dotenv').config();
+const storageArea = "C:/Users/lokes/Desktop/all work related/YouEdit/storage"
 const {Server,EVENTS} = require('@tus/server') //get the server protocol mounter
 const {FileStore} = require('@tus/file-store') //get the storage area
 const fs=require('fs');
@@ -28,12 +30,12 @@ const server = new Server({
 server.on(EVENTS.POST_FINISH,async(req,res,upload)=>{//EVENTS contains all the event's on this server
   
   try{
-   
-      await fs.rename('C:/Users/lokes/Desktop/YouEdit/storage'+'/'+upload.id,'C:/Users/lokes/Desktop/YouEdit/storage'+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],(e)=>{});
-
+      console.log(upload.metadata)
+      const res = await fs.rename(storageArea+'/'+upload.id,storageArea+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],(e)=>{});
+     console.log(res);
     
   
-      const recent=await Media.create({fileName:upload.id,filePath:'C:/Users/lokes/Desktop/YouEdit/storage'+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],mimeType:upload.metadata.filetype,creationDate:new Date(),owner:upload.metadata.id})
+      const recent=await Media.create({fileName:upload.id,filePath:storageArea+'/'+upload.id+'.'+upload.metadata.filetype.split('/')[1],mimeType:upload.metadata.filetype,creationDate:new Date(),owner:upload.metadata.id})
       //inserting the media in appropriate place
       
      
@@ -119,4 +121,4 @@ catch(e){
 
 server.listen({host, port}) //make the tus server listen for file upload's
 
-mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});
+mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});

@@ -1,0 +1,5 @@
+export const BACKEND_URL = 'http://localhost:8000'
+export const TUS_URL = 'http://localhost:1080'
+export const FRONTEND_URL = 'http://localhost:5173'
+export const SERVE_URL = 'http://localhost:3000'
+export const YOUTUBE_URL = 'http://localhost:5000'

@@ -60,10 +60,10 @@ const mongoose=require('mongoose');
 const axios=require('axios');
 
 
-const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
+const VideoTask=mongoose.model('VideoTask',require('./schema.js').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
 const YoutubeBundle=mongoose.model('Bundle',require('./schema.js').youtubeBundleSchema);
-const EditorProfile=mongoose.model('Editors',require('./schema').EditorProfile);
+const EditorProfile=mongoose.model('Editors',require('./schema.js').EditorProfile);
 
 const cors=require('cors')
 app.use(cors());
@@ -361,4 +361,4 @@ function code(){//random code is genertaed
   }
   return otp;
 }
-mongoose.connect("mongodb://127.0.0.1:27017/YouEdit").then(()=>{console.log("connected")});
+mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});
