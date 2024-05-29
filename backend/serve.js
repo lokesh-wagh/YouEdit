@@ -4,7 +4,6 @@
 // port 5717 serves frontend
 // port 5000 send's to youtube
 // port 8000 would be the general backend port where mongodb talk's and othertrivial thing's would happen
-require('dotenv').config();
 const path=require('path');
 const archiver=require('archiver');
 
@@ -95,7 +94,7 @@ app.get('/stream', async(req, res) => {
         const file=await Media.findOne({fileName:req.query.id});
         const filePath = file.filePath //------->change both of these hardcoded value's 
         const fileName =file.fileName+'.'+file.mimeType.split('/'); 
-        // console.log(filePath)
+  
   const stat = fs.statSync(filePath);//read stat's of the file synchronoulsy
   const fileSize = stat.size;// tell the source tag what the size would be
 
@@ -208,9 +207,4 @@ app.get('/download-zip', async(req, res) => {
 });
 
 
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`); //listen on the specified port
-});
-
-mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});
+module.exports = {serve : app , serveport : 3000}

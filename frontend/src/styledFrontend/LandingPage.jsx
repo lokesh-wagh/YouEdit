@@ -1,5 +1,5 @@
 import { Card, CardMedia, Grid } from "@mui/material";
-import { FRONTEND_URL , BACKEND_URL , SERVE_URL , YOUTUBE_URL , TUS_URL } from '../config';
+
 function LandingPage() {
  return (
   <Grid container style={{marginTop:'10%'}}>
@@ -8,7 +8,7 @@ function LandingPage() {
     <Card>
       <CardMedia
       component={'img'}
-      src={YOUTUBE_URL + "/resource/websiteLogo"}
+      src={"http://localhost:3000/resource/websiteLogo"}
       >
       
       </CardMedia>

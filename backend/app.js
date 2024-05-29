@@ -60,10 +60,10 @@ const mongoose=require('mongoose');
 const axios=require('axios');
 
 
-const VideoTask=mongoose.model('VideoTask',require('./schema.js').videoTaskSchema);
+const VideoTask=mongoose.model('VideoTask',require('./schema').videoTaskSchema);
 const User = mongoose.model('User',require('./schema.js').finalUserSchema);
 const YoutubeBundle=mongoose.model('Bundle',require('./schema.js').youtubeBundleSchema);
-const EditorProfile=mongoose.model('Editors',require('./schema.js').EditorProfile);
+const EditorProfile=mongoose.model('Editors',require('./schema').EditorProfile);
 
 const cors=require('cors')
 app.use(cors());
@@ -346,9 +346,6 @@ app.get('/hire',async (req,res)=>{
   port=8000;
 
  
-app.listen(port,()=>{
-    console.log('listening on port '+port);
-})
 
 
 
@@ -361,4 +358,5 @@ function code(){//random code is genertaed
   }
   return otp;
 }
-mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});
+// mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});
+module.exports = {backend : app , port : 8000}

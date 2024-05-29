@@ -37,13 +37,9 @@ import StarIcon from '@mui/icons-material/Star';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-import { FRONTEND_URL , BACKEND_URL , SERVE_URL , YOUTUBE_URL , TUS_URL } from '../config';
-
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
 });
-
-const backgroundColor = '#F6F8FC'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -52,7 +48,7 @@ function App() {
 
 
   useEffect(() => {
-    send.get(BACKEND_URL + '/auth/status')
+    send.get('http://localhost:8000/auth/status')
       .then((response) => {
         setAuthenticated(response.data);
       })
@@ -66,7 +62,7 @@ function App() {
       setUser(null); // if not authenticated, set user as false
     }
     if (authenticated === true) {
-      send.get(BACKEND_URL + '/user')
+      send.get('http://localhost:8000/user')
         .then((res) => {
           setUser(res.data);
         })
@@ -76,7 +72,7 @@ function App() {
     }
   }, [authenticated]);
   function handleLogout(){
-      send.get(BACKEND_URL + '/logout').then(()=>{
+      send.get('http://localhost:8000/logout').then(()=>{
         setAuthenticated(false);
         setUser(null);
       }).catch((err)=>{
@@ -84,7 +80,7 @@ function App() {
       })
   }
   if (user === null) {
-    send.get( BACKEND_URL + '/user')
+    send.get('http://localhost:8000/user')
       .then((res) => {
         setUser(res.data);
       })
@@ -174,11 +170,11 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
 
   return (
     
-    <div style={{ display: 'flex',background:backgroundColor}}>
+    <div style={{ display: 'flex',background:'#F7F9FC'}}>
       
       <AppBar
         position="fixed"
-        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth,background:backgroundColor}}
+        style={{ width: 'calc(100% - ' + drawerWidth + 'px)', marginLeft: drawerWidth,background:'#F7F9FC'}}
         elevation={0}
      
       >
@@ -203,13 +199,13 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
         PaperProps={{sx:{
           width:drawerWidth,
           border:'none',  
-          backgroundColor:backgroundColor
+          backgroundColor:'#F7F9FC'
         }}}
         anchor="left"
       >
         <div>
           <Typography variant="h5" style={{ padding: '2rem' }}>
-          🎥YOUEDIT🎥
+          😍Made By Lokesh😍
           </Typography>
         </div>
 
@@ -317,7 +313,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               </StarIcon> 
                               </Grid>
                               <Grid item >
-                                  {user?.editorProfile?.rating}.0
+                                  {user.editorProfile.rating}.0
                               </Grid>
                             </Grid>
                            
@@ -327,7 +323,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               <Container  style={{marginTop:'2vh',marginBottom:'2vh', textAlign:'center'}} >
                                 <Typography>{user.username}</Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                {user?.editorProfile?.description}
+                                {user.editorProfile.description}
                                 </Typography>
                               </Container>
                              
@@ -335,7 +331,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
                               
                               
-                              {user?.editorProfile?.skills.map((skill,index)=>{
+                              {user.editorProfile.skills.map((skill,index)=>{
                                       return(
                                           <CapsuleIconButton
                                           key={index}
@@ -351,7 +347,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               
 
                               {
-                              user?.editorProfile?.qualifications.map((skill,index)=>{
+                              user.editorProfile.qualifications.map((skill,index)=>{
                                       return(
                                           <CapsuleIconButton
                                           key={index}
@@ -437,7 +433,7 @@ function EditorRegister({User,setUser}){
 
   const handleFormSubmit = () => {
   
-    axios.get(BACKEND_URL + '/registerEditor',{
+    axios.get('http://localhost:8000/registerEditor',{
       params:{
         skills:skillsList,
         descriptionEditor:formData.description,
@@ -585,7 +581,7 @@ function CapsuleIconButton({ text,onClick}) {
     justifyContent: 'center',
     margin:'2px',
     height:'8%',
-    backgroundColor:backgroundColor,
+    backgroundColor:'#F7F9FC',
     border:'2px solid gold',
   };
 

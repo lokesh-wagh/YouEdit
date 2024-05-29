@@ -70,7 +70,7 @@ youtubeServer.get('/login', (req, res) => {
 
 youtubeServer.get('/google', async (req, res) => {
   const { code } = req.query;
-  // console.log(req.query);
+  console.log(req.query);
   try {
     // Exchange the authorization code for tokens
     const { tokens } = await oauth2Client.getToken(code);
@@ -96,7 +96,7 @@ youtubeServer.get('/google', async (req, res) => {
       const userProfile = response.data;
       
       googleid=userProfile.metadata.sources[0].id;
-      // console.log('google id is '+googleid);
+      console.log('google id is '+googleid);
       const user=await User.findOne({googleId:googleid});
       if(user==null){
         // res.send('User does not exist in database and was created');
@@ -117,13 +117,13 @@ youtubeServer.get('/google', async (req, res) => {
       .then((response) => {
         // Handle the server's response here
         
-        // console.log('Server Response:', response.data);
+        console.log('Server Response:', response.data);
         
       }
       )
       .catch((error) => {
         // Handle any errors that occurred during the request
-        // console.error('Error:', error.message);
+        console.error('Error:', error.message);
       });
   
       res.redirect('http://localhost:5173/previous-task');
@@ -207,9 +207,4 @@ youtubeServer.get('/upload',async (req,res)=>{
     }
   })
 
-  mongoose.connect(process.env.MONGO_URL).then(()=>{console.log("connected")});
-  youtubeServer.listen(5000,()=>{
-    
-    //when /login would be triggered the user would give the permission to upload the file and it would be uploaded
-    console.log('youtube is listening on '+5000);
-  })
+  module.exports = {youtubeServer , youtubeport : 5000}

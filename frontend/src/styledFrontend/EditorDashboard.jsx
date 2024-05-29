@@ -3,7 +3,6 @@ import WebAssetIcon from '@mui/icons-material/WebAsset';
 import axios from 'axios';
 import {Button,Dialog,DialogTitle,DialogContent,TextField,Card,CardContent,DialogActions,List,ListItem, ButtonGroup, Snackbar, Alert, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, CardHeader, CardMedia, ListItemIcon, ListItemText, Container, Icon, Tooltip, Divider} from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { FRONTEND_URL , BACKEND_URL , SERVE_URL , YOUTUBE_URL , TUS_URL } from '../config';
 const send=axios.create({
   withCredentials:true 
 
@@ -20,7 +19,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
   const [ycode,setYcode]=useState(0);
   const [snackBar,setSnackBar]=useState(null)
   useEffect(()=>{
-      send.get(BACKEND_URL + '/createbundle').then((res)=>{
+      send.get('http://localhost:8000/createbundle').then((res)=>{
     
           setYcode(res.data);        
       })
@@ -36,14 +35,14 @@ function TaskManagerAndCreateBundle({User,orders }) {
     setCurrentTask(null);
   };
   function handleFinish(){
-    send.get(BACKEND_URL + '/finishbundle',{params:{code:ycode,
+    send.get('http://localhost:8000/finishbundle',{params:{code:ycode,
   id:currentTask.ownerid}}).then((res)=>{
     console.log(res.data);
-    window.location.href=FRONTEND_URL + '/editor';
+    window.location.href='http://localhost:5173/editor';
   })
   }
   function handleDownloadVideo(orderId) {
-    window.location.href=`${SERVE_URL}/download?id=${orderId}`;
+    window.location.href=`http://localhost:3000/download?id=${orderId}`;
     console.log(`Downloading video for Order ${orderId}`);
   }
   const handleRowHover = (index) => {
@@ -56,7 +55,7 @@ function TaskManagerAndCreateBundle({User,orders }) {
  
   
 function handleDownloadResources(orderId) {
-  window.location.href=`${SERVE_URL}/download-zip?id=${orderId}`
+  window.location.href=`http://localhost:3000/download-zip?id=${orderId}`
   console.log(`Downloading resources for Order ${orderId}`);
 }
   if(editorRegisteredState==false){
@@ -170,7 +169,7 @@ function handleDownloadResources(orderId) {
                                          
                                          component="video"
                                          controls // Add this attribute to display video controls (play, pause, volume, etc.)
-                                         src={`${SERVE_URL}/stream?id=${task.order.orignalVideo.fileName}`}
+                                         src={`http://localhost:3000/stream?id=${task.order.orignalVideo.fileName}`}
                                          title="Your Video Title"
                                      />
                                      <CardContent>
@@ -298,7 +297,7 @@ function EditorRegister({User}){
     console.log('Description Editor',formData.description)
     console.log('Rates',rateList)
     console.log('Qualification',qualificationList)
-    axios.get(BACKEND_URL + '/registerEditor',{
+    axios.get('http://localhost:8000/registerEditor',{
       params:{
         skills:skillsList,
         descriptionEditor:formData.description,
@@ -482,7 +481,6 @@ import CloudUploadRoundedIcon from '@mui/icons-material/CloudUpload';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import PauseCircleFilledRoundedIcon from '@mui/icons-material/PauseCircleFilledRounded';
 import * as tus from 'tus-js-client';
-
 function Upload({User,code,role,bundlereciever,ycode}) {
   const theme=useTheme();
   const [upload,setUpload]=useState(null);
@@ -505,7 +503,7 @@ function Upload({User,code,role,bundlereciever,ycode}) {
         setData(inputRef.current.files[0].name+' is selected'); //display that file is selected
       }
       setUpload (new tus.Upload(inputRef.current.files[0], {
-          endpoint: TUS_URL + "/storage/",
+          endpoint: "http://localhost:1080/storage/",
           retryDelays: [0, 3000, 5000, 10000, 20000],
           metadata: {
             filename: inputRef.current.files[0].name,

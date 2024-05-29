@@ -5,23 +5,22 @@ import StarIcon from '@mui/icons-material/Star';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import {  YouTube } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
-import { FRONTEND_URL , BACKEND_URL , SERVE_URL , YOUTUBE_URL , TUS_URL } from '../config';
 export default function Hire({User,task}){
     const [editors,setEditors]=useState(null);
  
     useEffect(()=>{
-        axios?.get(BACKEND_URL + '/hireList')?.then((res)=>{
+        axios.get('http://localhost:8000/hireList').then((res)=>{
             console.log(res.data);
             setEditors(res.data);
         })
     },[]);
     function handleRequest(editorid){
-        axios?.get(BACKEND_URL + '/hire',{params:{
+        axios.get('http://localhost:8000/hire',{params:{
             editorid:editorid,
-            ownerid:User?.googleId,
-            taskid:task?.id,
-        }})?.then(()=>{
-            console?.log('success in hiring');
+            ownerid:User.googleId,
+            taskid:task.id,
+        }}).then(()=>{
+            console.log('success in hiring');
         })
     }
    
@@ -49,15 +48,15 @@ export default function Hire({User,task}){
         ):(
             <div style={{padding:'3%'}}>
                 <Grid container spacing={3}>
-                    {editors?.map((editor,index) => {
-                    if(editor?.googleId!=User?.googleId){
+                    {editors.map((editor,index) => {
+                    if(editor.googleId!=User.googleId){
                         return(
                             <Grid item xs={4} key={index}>
                                  <Card style={{padding:'1%',border:'2px solid gold'}}>
                                         
                                       <CardHeader
-                                      action={<DropdownMenu rates={editor?.rates} editorid={editor?.googleId} handleRequest={handleRequest}></DropdownMenu>}></CardHeader>
-                                      <Avatar src={editor?.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
+                                      action={<DropdownMenu rates={editor.rates} editorid={editor.googleId} handleRequest={handleRequest}></DropdownMenu>}></CardHeader>
+                                      <Avatar src={editor.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
 
                                       </Avatar>
                                       <Divider></Divider>
@@ -71,7 +70,7 @@ export default function Hire({User,task}){
                                             </StarIcon> 
                                             </Grid>
                                             <Grid item >
-                                                {editor?.rating}?.0
+                                                {editor.rating}.0
                                             </Grid>
                                           </Grid>
                                          
@@ -79,9 +78,9 @@ export default function Hire({User,task}){
                                          
                                            
                                             <Container  style={{marginTop:'2vh',marginBottom:'2vh', textAlign:'center'}} >
-                                              <Typography>{editor?.googleId}</Typography>
+                                              <Typography>{editor.googleId}</Typography>
                                               <Typography variant="body2" color="textSecondary" component="p">
-                                              {editor?.description}
+                                              {editor.description}
                                               </Typography>
                                             </Container>
                                            
@@ -89,7 +88,7 @@ export default function Hire({User,task}){
                                             <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
                                             
                                             
-                                            {editor?.skills?.map((skill,index)=>{
+                                            {editor.skills.map((skill,index)=>{
                                                     return(
                                                         <CapsuleIconButton
                                                         key={index}
@@ -105,7 +104,7 @@ export default function Hire({User,task}){
 
 
                                             {
-                                            editor?.qualifications?.map((skill,index)=>{
+                                            editor.qualifications.map((skill,index)=>{
                                                     return(
                                                         <CapsuleIconButton
                                                         key={index}
@@ -146,9 +145,9 @@ export default function Hire({User,task}){
         }
 function DropdownMenu({rates,editorid,handleRequest}) {
           const [anchorEl, setAnchorEl] = useState(null);
-          console.log(rates,editorid)
+        
           const handleClick = (event) => {
-            setAnchorEl(event?.currentTarget);
+            setAnchorEl(event.currentTarget);
           };
         
           const handleClose = () => {
@@ -173,10 +172,10 @@ function DropdownMenu({rates,editorid,handleRequest}) {
                 onClose={handleClose}
               >
                 {
-                  rates?.map((rate,index)=>{
+                  rates.map((rate,index)=>{
                     return(
                       <MenuItem  key={index}>
-                         <CapsuleIconButtonWithDropDown rate={rate?.rate} description={rate?.description} level={rate?.level}></CapsuleIconButtonWithDropDown>
+                         <CapsuleIconButtonWithDropDown rate={rate.rate} description={rate.description} level={rate.level}></CapsuleIconButtonWithDropDown>
                          <IconButton onClick={()=>{handleRequest(editorid)
                           handleClose()
                         }}
@@ -196,8 +195,8 @@ function CapsuleIconButtonWithDropDown({rate,level,description}){
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleMenuClick = (event) => {
-        console?.log(event)
-      setAnchorEl(event?.currentTarget);
+        console.log(event)
+      setAnchorEl(event.currentTarget);
     };
   
     const handleClose = () => {
