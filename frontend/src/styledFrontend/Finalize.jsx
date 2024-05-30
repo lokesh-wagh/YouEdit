@@ -1,25 +1,25 @@
 import { Avatar, Card, CardContent, CardHeader, CardMedia, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from "@mui/material";
-
+import { BACKEND_URL , FRONTEND_URL, SERVE_URL,YOUTUBE_URL,TUS_URL } from '../config';
 export default function Finalize({User,task}){
 
     console.log(task);
     function handleDownloadVideo(bundle) {
-      window.location.href = `http://localhost:3000/download?id=${bundle.video.fileName}`;
+      window.location.href = `${SERVE_URL}/download?id=${bundle.video.fileName}`;
       console.log('Download video');
     }
     function finalize(bundle){
       const param=JSON.stringify(bundle);
-      window.location.href='http://localhost:5000/login?bundle='+param;
+      window.location.href=YOUTUBE_URL + '/login?bundle='+param;
     }
     function handleDownloadThumbnail (bundle)  {
-      window.location.href = `http://localhost:3000/download?id=${bundle.thumbnail.fileName}`;
+      window.location.href = `${SERVE_URL}/download?id=${bundle.thumbnail.fileName}`;
       console.log('Download resources');
     }
       return (
         <div style={{padding:'2%'}}>
          
           <Grid container spacing={3}>
-             {task.editedVideo.map((bundle,index)=>{
+             {task.editedVideo?.map((bundle,index)=>{
               return(
                 <Grid item key={index} xs={6}>
                   <Card style={{border:'2px solid gold'}}>
@@ -37,7 +37,7 @@ export default function Finalize({User,task}){
                       <CardMedia 
                         component={'video'}
                         controls
-                        src={`http://localhost:3000/stream?id=${bundle.video.fileName}`}
+                        src={`${SERVE_URL}/stream?id=${bundle.video.fileName}`}
                         title={`video by editor`}
                         
                         />
@@ -47,7 +47,7 @@ export default function Finalize({User,task}){
                     <CardMedia
                       
                       component={'img'}
-                      src={`http://localhost:3000/stream?id=${bundle.thumbnail.fileName}`}
+                      src={`${SERVE_URL}/stream?id=${bundle.thumbnail.fileName}`}
                       title={`video thumbnail`}
                       />
                    

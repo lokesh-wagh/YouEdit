@@ -36,7 +36,7 @@ import { Alert, Button, ButtonGroup, Card, CardContent, CardHeader, Container, D
 import StarIcon from '@mui/icons-material/Star';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CancelIcon from '@mui/icons-material/Cancel';
-
+import { BACKEND_URL , FRONTEND_URL, SERVE_URL,YOUTUBE_URL,TUS_URL } from '../config';
 const send = axios.create({
   withCredentials: true, // this ensures that axios is sending cookies along with the request
 });
@@ -48,12 +48,12 @@ function App() {
 
 
   useEffect(() => {
-    send.get('http://localhost:8000/auth/status')
-      .then((response) => {
-        setAuthenticated(response.data);
+    send?.get(BACKEND_URL + '/auth/status')
+      ?.then((response) => {
+        setAuthenticated(response?.data);
       })
-      .catch((err) => {
-        console.log(err.message);
+      ?.catch((err) => {
+        console?.log(err?.message);
       });
   }, []);
 
@@ -62,30 +62,30 @@ function App() {
       setUser(null); // if not authenticated, set user as false
     }
     if (authenticated === true) {
-      send.get('http://localhost:8000/user')
-        .then((res) => {
-          setUser(res.data);
+      send?.get(BACKEND_URL + '/user')
+        ?.then((res) => {
+          setUser(res?.data);
         })
-        .catch((err) => {
-          console.log(err.message);
+        ?.catch((err) => {
+          console?.log(err?.message);
         });
     }
   }, [authenticated]);
   function handleLogout(){
-      send.get('http://localhost:8000/logout').then(()=>{
+      send?.get(BACKEND_URL + '/logout')?.then(()=>{
         setAuthenticated(false);
         setUser(null);
-      }).catch((err)=>{
-        console.log(err);
+      })?.catch((err)=>{
+        console?.log(err);
       })
   }
   if (user === null) {
-    send.get('http://localhost:8000/user')
-      .then((res) => {
-        setUser(res.data);
+    send?.get(BACKEND_URL + '/user')
+      ?.then((res) => {
+        setUser(res?.data);
       })
-      .catch((err) => {
-        console.log(err.message);
+      ?.catch((err) => {
+        console?.log(err?.message);
       });
   }
 
@@ -121,8 +121,8 @@ function App() {
       
               <Route path='/creator' element={<CreatorDashboard user={user} />} />
               <Route path='/creator/create-task' element={<CreateTask User={user || { googleId: '11231231' }} />} />
-              <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user || { googleId: '11231231' }} tasks={(user && user.tasks) || {}} setUser={setUser}/>} />
-              <Route path='/editor' element={<TaskManagerAndCreateBundle User={user || { googleId: '11231231' }} orders={(user && user.videoOrdersAssigned) || {}} />} />
+              <Route path='/creator/previous-tasks/*' element={<PreviousTask User={user || { googleId: '11231231' }} tasks={(user && user?.tasks) || {}} setUser={setUser}/>} />
+              <Route path='/editor' element={<TaskManagerAndCreateBundle User={user || { googleId: '11231231' }} orders={(user && user?.videoOrdersAssigned) || {}} />} />
             
           </Routes>
           </Layout>
@@ -184,7 +184,7 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
           <IconButton onClick={()=>{
             setProfileOpen(true);
           }}>
-              <Avatar src={user&&user.profileURL} style={{height:'6vh',width:'6vh'}}></Avatar>
+              <Avatar src={user&&user?.profileURL} style={{height:'6vh',width:'6vh'}}></Avatar>
           </IconButton>
           
         </Toolbar>
@@ -205,20 +205,20 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
       >
         <div>
           <Typography variant="h5" style={{ padding: '2rem' }}>
-          😍Made By Lokesh😍
+          YOUEDIT
           </Typography>
         </div>
 
         {/* links/list section */}
         <List>
-          {menuItems.map((item,index) => (
+          {menuItems?.map((item,index) => (
             <ListItem
             
               button
-              key={item.text}
+              key={item?.text}
               onClick={() => {
                 setSelectedItem(index);
-                history(item.path)}}
+                history(item?.path)}}
               sx={{
                 backgroundColor: selectedItem === index ? '#D3E3FD' : 'transparent', // Change background color for selected item
                 borderRadius:'10px',
@@ -229,8 +229,8 @@ function Layout({ children,handleLogout,user,setProfileOpen}) {
                 marginBottom:'2%',  
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text}/>
+              <ListItemIcon>{item?.icon}</ListItemIcon>
+              <ListItemText primary={item?.text}/>
             </ListItem>
           ))}
         </List>
@@ -299,7 +299,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                         </IconButton>
                         </>
                        }/>
-                        <Avatar src={user.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
+                        <Avatar src={user?.profileURL} style={{height:'100px',width:'100px',margin:'3vh auto',border:'4px solid lime'}}>
 
                         </Avatar>
                         <Divider></Divider>
@@ -313,7 +313,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               </StarIcon> 
                               </Grid>
                               <Grid item >
-                                  {user.editorProfile.rating}.0
+                                  {user?.editorProfile?.rating}?.0
                               </Grid>
                             </Grid>
                            
@@ -321,9 +321,9 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                            
                              
                               <Container  style={{marginTop:'2vh',marginBottom:'2vh', textAlign:'center'}} >
-                                <Typography>{user.username}</Typography>
+                                <Typography>{user?.username}</Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                {user.editorProfile.description}
+                                {user?.editorProfile?.description}
                                 </Typography>
                               </Container>
                              
@@ -331,7 +331,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
                               
                               
-                              {user.editorProfile.skills.map((skill,index)=>{
+                              {user?.editorProfile?.skills?.map((skill,index)=>{
                                       return(
                                           <CapsuleIconButton
                                           key={index}
@@ -347,7 +347,7 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
                               
 
                               {
-                              user.editorProfile.qualifications.map((skill,index)=>{
+                              user?.editorProfile?.qualifications?.map((skill,index)=>{
                                       return(
                                           <CapsuleIconButton
                                           key={index}
@@ -376,75 +376,75 @@ function ProfileToast({user,handleLogout,setProfileOpen,setUser}){
 function EditorRegister({User,setUser}){
   const [open, setOpen] = useState(true);
   const [formData, setFormData] = useState({
-    description: User.editorProfile.description,
+    description: User?.editorProfile?.description,
     skills:'',
     qualification:'',
     rates:'',
     level:'',
     descriptionRate:'',
   });
-  const [skillsList, setSkillsList] = useState(User.editorProfile.skills);
-  const [qualificationList,setQualificationList]=useState(User.editorProfile.qualifications);
+  const [skillsList, setSkillsList] = useState(User?.editorProfile?.skills);
+  const [qualificationList,setQualificationList]=useState(User?.editorProfile?.qualifications);
   const [rateList,setRateList]=useState([]);
-  console.log(User);
+  console?.log(User);
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleInputChange = (e) => {
     
-    const { name, value } = e.target;
+    const { name, value } = e?.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleAddSkill = (e) => {
-    if (e.key === 'Enter' && formData.skills.trim() !== '') {
-      setSkillsList((prevSkillsList) => [...prevSkillsList, formData.skills]);
+    if (e?.key === 'Enter' && formData?.skills?.trim() !== '') {
+      setSkillsList((prevSkillsList) => [...prevSkillsList, formData?.skills]);
       setFormData({ ...formData, skills: '' });
     }
   };
   const handleAddRate = (e) => {
-    if (e.key === 'Enter' && formData.rates.trim() !== '') {
-      setRateList((prevSkillsList) => [...prevSkillsList, {rate:formData.rates,level:formData.level,description:formData.descriptionRate}]);
+    if (e?.key === 'Enter' && formData?.rates?.trim() !== '') {
+      setRateList((prevSkillsList) => [...prevSkillsList, {rate:formData?.rates,level:formData?.level,description:formData?.descriptionRate}]);
       setFormData({ ...formData, rates: '',descriptionRate:'',level:''});
     }
   };
   function handleSkillDelete(id){
-    setSkillsList(skillsList.filter((skill,index)=>{
+    setSkillsList(skillsList?.filter((skill,index)=>{
       return id!=index;
     }))
   }
   function handleQualificationDelete(id){
-    setQualificationList(qualificationList.filter((skill,index)=>{
+    setQualificationList(qualificationList?.filter((skill,index)=>{
       return id!=index;
     }))
   }
   function handleRateDelete(id){
-    setRateList(rateList.filter((skill,index)=>{
+    setRateList(rateList?.filter((skill,index)=>{
       return id!=index;
     }))
   }
   const handleAddQualification = (e) => {
-    if (e.key === 'Enter' && formData.qualification.trim() !== '') {
-      setQualificationList((prevSkillsList) => [...prevSkillsList, formData.qualification]);
+    if (e?.key === 'Enter' && formData?.qualification?.trim() !== '') {
+      setQualificationList((prevSkillsList) => [...prevSkillsList, formData?.qualification]);
       setFormData({ ...formData, qualification: '' });
     }
   };
 
   const handleFormSubmit = () => {
   
-    axios.get('http://localhost:8000/registerEditor',{
+    axios?.get(BACKEND_URL + '/registerEditor',{
       params:{
         skills:skillsList,
-        descriptionEditor:formData.description,
+        descriptionEditor:formData?.description,
         rates:rateList,
         qualification:qualificationList,
-        googleId:User.googleId,
+        googleId:User?.googleId,
       }
     })
     // Close the dialog
     setUser({...User,editorProfile:{skills:skillsList,
-      description:formData.description,
+      description:formData?.description,
       rates:rateList,
       qualifications:qualificationList}});
     setOpen(false);
@@ -475,14 +475,14 @@ function EditorRegister({User,setUser}){
                 label="Description of Yourself"
                 type="text"
                 fullWidth
-                value={formData.description}
+                value={formData?.description}
                 onChange={handleInputChange}
                
               />
             
             <ButtonGroup style={{flexWrap:'wrap'}}>
-                {rateList.map((skill, index) => (
-                 <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={`${skill.level}:${skill.description}-${skill.rate}`} onClick={()=>{handleRateDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
+                {rateList?.map((skill, index) => (
+                 <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={`${skill?.level}:${skill?.description}-${skill?.rate}`} onClick={()=>{handleRateDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
                 ))}
              </ButtonGroup>
              
@@ -493,7 +493,7 @@ function EditorRegister({User,setUser}){
                 label="Level"
                 type="text"
                 fullWidth
-                value={formData.level}
+                value={formData?.level}
                 onChange={handleInputChange}
                 onKeyDown={handleAddRate}
               />
@@ -504,7 +504,7 @@ function EditorRegister({User,setUser}){
                 label="what would you do"
                 type="text"
                 fullWidth
-                value={formData.descriptionRate}
+                value={formData?.descriptionRate}
                 onChange={handleInputChange}
                 onKeyDown={handleAddRate}
               />
@@ -515,13 +515,13 @@ function EditorRegister({User,setUser}){
                 label="Rates"
                 type="text"
                 fullWidth
-                value={formData.rates}
+                value={formData?.rates}
                 onChange={handleInputChange}
                 onKeyDown={handleAddRate}
               />
             
               <ButtonGroup style={{flexWrap:'wrap'}}>
-                {qualificationList.map((skill, index) => (
+                {qualificationList?.map((skill, index) => (
                   <CapsuleIconButton key={index} icon={<CancelIcon></CancelIcon>}  text={skill} onClick={()=>{handleQualificationDelete(index)}}></CapsuleIconButton>//put capsule button's instead of icon
                 ))}
              </ButtonGroup>
@@ -534,12 +534,12 @@ function EditorRegister({User,setUser}){
                 label="Qualification"
                 type="text"
                 fullWidth
-                value={formData.qualification}
+                value={formData?.qualification}
                 onChange={handleInputChange}
                 onKeyDown={handleAddQualification}
               />
              <ButtonGroup style={{flexWrap:'wrap'}}>
-                {skillsList.map((skill, index) => (
+                {skillsList?.map((skill, index) => (
                    <CapsuleIconButton  key={index} icon={<CancelIcon></CancelIcon>}  text={skill} onClick={()=>{handleSkillDelete(index)}}></CapsuleIconButton> //put capsule button's instead of icon
                 ))}
            </ButtonGroup>
@@ -550,7 +550,7 @@ function EditorRegister({User,setUser}){
                 label="Skills"
                 type="text"
                 fullWidth
-                value={formData.skills}
+                value={formData?.skills}
                 onChange={handleInputChange}
                 onKeyDown={handleAddSkill}
               />

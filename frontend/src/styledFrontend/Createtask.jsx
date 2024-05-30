@@ -13,7 +13,7 @@ import { useTheme} from '@mui/material/styles';
 import {Card,CardContent,CardHeader} from '@mui/material'
 import {Grid} from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
+import { BACKEND_URL , FRONTEND_URL, SERVE_URL,YOUTUBE_URL,TUS_URL } from '../config';
 export default function CreateTask({ User }) {
     const [taskCode,setTaskCode]=useState(null); 
     const theme=useTheme(); 
@@ -23,15 +23,15 @@ export default function CreateTask({ User }) {
       if(taskCode==null){
         return;
       }
-      axios.get('http://localhost:8000/finishtask',{params:{
+      axios.get(BACKEND_URL + '/finishtask',{params:{
         code:taskCode,
         id:User.googleId,
       }}).then(()=>{
-        window.location.href='http://localhost:5173/creator/previous-task';
+        window.location.href=FRONTEND_URL + '/creator/previous-task';
       })
     } 
     useEffect(()=>{
-      axios.get('http://localhost:8000/createtask').then((res)=>{
+      axios.get(BACKEND_URL + '/createtask').then((res)=>{
         console.log(res.data);
         setTaskCode(res.data);
       })
@@ -107,7 +107,7 @@ import * as tus from 'tus-js-client'
           setData(inputRef.current.files[0].name+' is selected'); //display that file is selected
         }
         setUpload (new tus.Upload(inputRef.current.files[0], {
-            endpoint: "http://localhost:1080/storage/",
+            endpoint: TUS_URL + "/storage/",
             retryDelays: [0, 3000, 5000, 10000, 20000],
             metadata: {
               filename: inputRef.current.files[0].name,

@@ -5,17 +5,18 @@ import StarIcon from '@mui/icons-material/Star';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import {  YouTube } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
+import { BACKEND_URL , FRONTEND_URL, SERVE_URL,YOUTUBE_URL,TUS_URL } from '../config';
 export default function Hire({User,task}){
     const [editors,setEditors]=useState(null);
  
     useEffect(()=>{
-        axios.get('http://localhost:8000/hireList').then((res)=>{
+        axios.get(BACKEND_URL + '/hireList').then((res)=>{
             console.log(res.data);
             setEditors(res.data);
         })
     },[]);
     function handleRequest(editorid){
-        axios.get('http://localhost:8000/hire',{params:{
+        axios.get(BACKEND_URL + '/hire',{params:{
             editorid:editorid,
             ownerid:User.googleId,
             taskid:task.id,
@@ -48,7 +49,7 @@ export default function Hire({User,task}){
         ):(
             <div style={{padding:'3%'}}>
                 <Grid container spacing={3}>
-                    {editors.map((editor,index) => {
+                    {editors?.map((editor,index) => {
                     if(editor.googleId!=User.googleId){
                         return(
                             <Grid item xs={4} key={index}>
@@ -88,7 +89,7 @@ export default function Hire({User,task}){
                                             <ButtonGroup style={{marginTop:'2vh',marginBottom:'2vh'}}>
                                             
                                             
-                                            {editor.skills.map((skill,index)=>{
+                                            {editor.skills?.map((skill,index)=>{
                                                     return(
                                                         <CapsuleIconButton
                                                         key={index}
@@ -104,7 +105,7 @@ export default function Hire({User,task}){
 
 
                                             {
-                                            editor.qualifications.map((skill,index)=>{
+                                            editor.qualifications?.map((skill,index)=>{
                                                     return(
                                                         <CapsuleIconButton
                                                         key={index}
@@ -172,7 +173,7 @@ function DropdownMenu({rates,editorid,handleRequest}) {
                 onClose={handleClose}
               >
                 {
-                  rates.map((rate,index)=>{
+                  rates?.map((rate,index)=>{
                     return(
                       <MenuItem  key={index}>
                          <CapsuleIconButtonWithDropDown rate={rate.rate} description={rate.description} level={rate.level}></CapsuleIconButtonWithDropDown>

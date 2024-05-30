@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { Card,CardHeader,CardContent, Typography, CardMedia, IconButton ,Snackbar,Alert} from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
 import { useState,useEffect } from 'react';
+import { BACKEND_URL , FRONTEND_URL, SERVE_URL,YOUTUBE_URL,TUS_URL } from '../config';
 
 export default function Auth() {
   const [open, setOpen] = useState(false);
@@ -16,7 +17,7 @@ export default function Auth() {
   }, []); 
 
   const handleClick = () => {
-    window.location.href = 'http://localhost:8000/google';
+    window.location.href = BACKEND_URL + '/google';
   };
 
   const handleClose = () => {
